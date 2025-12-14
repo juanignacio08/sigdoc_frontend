@@ -7,6 +7,8 @@ import { DatatableComponent, NgxDatatableModule, SelectionType } from '@swimlane
 import { Validators } from 'ngx-editor';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { ViewComponent } from './modals/view/view.component';
+import { AdvancedSearchComponent } from './modals/advanced-search/advanced-search.component';
 
 @Component({
   selector: 'app-search-teacher',
@@ -57,7 +59,7 @@ export class SearchTeacherComponent implements OnInit {
     private toastrMessage: ToastrMessage,
     private confirmationService: ConfirmationService
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -85,28 +87,69 @@ export class SearchTeacherComponent implements OnInit {
     });
   }
 
-  advancedSearch(){
+    // View record
+  viewRow(row: any) {
+    const modalRef = this.modalService.open(ViewComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: 'static',
+      scrollable: true
+    });
 
+    // pasar datos al componente modal
+    modalRef.componentInstance.data = row;
+
+    // opcional: recibir resultado cuando se cierre
+    modalRef.result.then(
+      (result) => {
+        // result si cerró con close(...)
+      },
+      (reason) => {
+        // dismissed (esc o backdrop)
+      }
+    );
   }
-  
-  deleteRow(row:any) {
+
+  advancedSearch() {
+    const modalRef = this.modalService.open(AdvancedSearchComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: 'static',
+      scrollable: true
+    });
+
+    // pasar datos al componente modal
+    //modalRef.componentInstance.data = row;
+
+    // opcional: recibir resultado cuando se cierre
+    modalRef.result.then(
+      (result) => {
+        // result si cerró con close(...)
+      },
+      (reason) => {
+        // dismissed (esc o backdrop)
+      }
+    );
+  }
+
+  deleteRow(row: any) {
     this.confirmationService.confirmDeletion('¿Estás seguro de eliminar?').subscribe(
       (confirmed: boolean) => {
-        
+
         if (confirmed) {
           // 2. Lógica real de eliminación (puedes reemplazar esto con tu servicio HTTP)
-          this.deleteRecord(row); 
-          
+          this.deleteRecord(row);
+
           // 3. Mostrar mensaje de éxito
           this.toastrMessage.showSuccess('¡Registro eliminado con éxito!');
-          
-        } 
+
+        }
         // else, el usuario canceló la acción.
       }
     );
   }
 
-  
+
   // fetch data
   fetch(cb: any) {
     const req = new XMLHttpRequest();
@@ -117,13 +160,11 @@ export class SearchTeacherComponent implements OnInit {
     };
     req.send();
   }
-  
-  // View record
-  viewRow(row: any, rowIndex: number) {
 
-  }
+
+
+
   // delete single row
-
   deleteRecord(row: any) {
     this.data = this.arrayRemove(this.data, row.id);
   }
@@ -133,7 +174,7 @@ export class SearchTeacherComponent implements OnInit {
       return element.id !== id;
     });
   }
-  
+
   // filter table data
   filterDatatable(event: any) {
     // get the value of the key pressed and make it lowercase
