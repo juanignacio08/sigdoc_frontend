@@ -8,6 +8,12 @@
     "USER":{
       "POST": "Manager"
     },
+    "SEARCH": {
+      "TEXT": "Search Teachers"      
+    },
+    "REGISTER": {
+      "TEXT": "Register Teachers"      
+    },
     "MAIN": {
       "TEXT": "-- Main"
     },

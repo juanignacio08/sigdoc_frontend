@@ -61,7 +61,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       }
     });
   }
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize') //['$event']
   windowResizecall() {
     if (window.innerWidth < 1025) {
       this.renderer.removeClass(this.document.body, 'side-closed');

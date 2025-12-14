@@ -92,7 +92,7 @@ export class RightSidebarComponent implements OnInit, AfterViewInit {
       this.isDarTheme = this.config.layout.variant === 'dark' ? true : false;
     }
   }
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')//['$event']
   windowResizecall() {
     this.setMenuHeight();
   }

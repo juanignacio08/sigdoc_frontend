@@ -1,5 +1,34 @@
 {
   "routes": [
+        {
+      "path": "/apps/search-teacher",
+      "title": "MENUITEMS.SEARCH.TEXT",
+      "iconType": "feather",
+      "icon": "search",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "submenu": []
+    },
+    {
+      "path": "/apps/register-teacher",
+      "title": "MENUITEMS.REGISTER.TEXT",
+      "iconType": "feather",
+      "icon": "clipboard",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "submenu": []
+    },
+
+
+
+
+
+
+
     {
       "path": "",
       "title": "MENUITEMS.MAIN.TEXT",

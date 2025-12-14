@@ -29,7 +29,6 @@ export type ChartOptions = {
         RouterLink,
         NgbProgressbar,
         NgApexchartsModule,
-        NgScrollbar,
     ]
 })
 export class MainComponent implements OnInit {

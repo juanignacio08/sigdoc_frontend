@@ -8,6 +8,12 @@
     "USER":{
       "POST": "Gerente"
     },
+    "SEARCH": {
+      "TEXT": "Buscar Docentes"      
+    },
+    "REGISTER": {
+      "TEXT": "Registrar Docentes"      
+    },
     "MAIN": {
       "TEXT": "-- Principal"
     },

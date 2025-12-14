@@ -340,9 +340,9 @@
 
 .btn-primary,
 .btn-primary.disabled {
-  @include mixin.button-shadow(primary);
-  background-color: variable.color(primary);
-  border-color: variable.color(primary);
+  @include mixin.button-shadow(primary) ;
+  background-color: variable.color(primary) !important;
+  border-color: variable.color(primary) !important;
 
   &:focus {
     background-color: variable.color_darken(primary, 10%) !important;
@@ -360,8 +360,8 @@
 
 .btn-outline-primary,
 .btn-outline-primary.disabled {
-  border-color: variable.color(primary);
-  color: variable.color(primary);
+  border-color: variable.color(primary) !important;
+  color: variable.color(primary) !important;
 
   &:hover,
   &:focus,

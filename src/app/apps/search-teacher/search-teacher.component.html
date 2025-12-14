@@ -1,0 +1,111 @@
+<section class="main-content">
+  <ul class="breadcrumb breadcrumb-style ">
+    <li class="breadcrumb-item">
+      <h5 class="page-title m-b-0">Personal Docente</h5>
+    </li>
+    <li class="breadcrumb-item">Busqueda</li>
+  </ul>
+  <div class="section-body">
+    <div class="row clearfix">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="p-10">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="row m-0">
+                  <div class="col-sm-12 p-0">
+
+                    <div class="table-title">
+                     <h5><strong>Búsqueda de Docentes</strong></h5>
+                    </div>
+
+                  </div>
+                  <div class="col-sm-12 p-0">
+                    <div class="ngxTableHeader justify-content-between">
+                      <div class="table-search-area">
+                        <div class="search-wrapper">
+                            <i class="material-icons search-icon">search</i>
+                            <input id="search-input" placeholder="Search" type="text" class="browser-default search-field"
+                                (keyup)="filterDatatable($event)" aria-label="Search box">
+                        </div>
+                      </div>
+                      <div class="header-buttons-left">
+                        <div class="tbl-btn-style d-flex">
+                            <!-- <button class="btn btn-primary d-flex align-items-center justify-content-center icon-text-button">
+                                <i class="material-icons">search</i>
+                                <span>Buscar</span>
+                            </button>
+                             -->
+                            <button class="btn btn-secondary d-flex align-items-center justify-content-center icon-text-button" (click)='advancedSearch()'>
+                                <i class="material-icons">search</i>
+                                <span>B.Avanzada</span>
+                            </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ngx-datatable #table class="material" [rows]="data" [loadingIndicator]="loadingIndicator"
+              columnMode="force" [headerHeight]="60" [footerHeight]="80" rowHeight="auto" [limit]="10"
+              [scrollbarH]="scrollBarHorizontal" [reorderable]="reorderable" [selected]="selected"
+              [selectionType]="selection">
+              
+              <ngx-datatable-column [width]="200" name="Nombre">
+                <ng-template let-row="row" let-value="value" let-i="index" ngx-datatable-cell-template>
+                  <img src="{{ row.img }}" class="data-table-img" />
+                  <div class="name-col-style">
+                    <div>{{row.firstName}} {{row.lastName}}</div>
+                    <div class="font-12 text-muted">{{row.designation}}</div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Telefono">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <span class="truncate-text">{{row.phone}}</span>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Email">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{row.email}}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Estado">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  @if (row.status==='Active') {
+                  <div class="badge-outline col-green">{{row.status}}
+                  </div>
+                  }
+                  @if (row.status==='Completed') {
+                  <div class="badge-outline col-red">{{row.status}}
+                  </div>
+                  }
+                  @if (row.status==='Pending') {
+                  <div class="badge-outline col-indigo">{{row.status}}
+                  </div>
+                  }
+                </ng-template>
+              </ngx-datatable-column>
+              
+              <ngx-datatable-column name="Acciones" [sortable]="false">
+                <ng-template let-value="value" let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                  <span>
+                    <button class="btn btn-tbl-view h-auto" (click)='viewRow(row, rowIndex)'>
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-tbl-delete h-auto" (click)='deleteRow(row)'>
+                      <i class="far fa-trash-alt"></i>
+                    </button>
+                  </span>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

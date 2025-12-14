@@ -39,7 +39,7 @@ $color-primary: #6777ef;
     border-color: transparent !important;
     color: #fff;
 
-    &:focus {
+/*     &:focus {
       background-color: #4f5ece !important;
 
       &:active {
@@ -54,7 +54,7 @@ $color-primary: #6777ef;
     &:hover {
       background-color: #4f5ece !important;
       color: #fff;
-    }
+    } */
 
     &.disabled {
       background-color: $color-primary;

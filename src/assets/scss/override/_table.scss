@@ -452,8 +452,31 @@ table tr:hover .table-links {
 .btn-tbl-edit:hover {
   color: #fff;
 }
+
+.btn-tbl-view {
+  background-color: variable.color(primary) !important;
+  height: 30px !important;
+  width: 30px !important;
+  margin: 2px !important;
+  line-height: 30px !important;
+  color: #fff;
+  border-radius: 50%;
+  i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  :focus {
+    background-color: #96a2b4;
+  }
+}
+.btn-tbl-edit:focus,
+.btn-tbl-edit:hover {
+  color: #fff;
+}
+
 .btn-tbl-delete {
-  background-color: #ff944f !important;
+  background-color: variable.color(danger) !important;
   height: 30px !important;
   width: 30px !important;
   margin: 2px !important;

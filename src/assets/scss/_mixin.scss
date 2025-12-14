@@ -139,7 +139,7 @@
 }
 
 @mixin form-control() {
-  background-color: variable.color_lighten(primary, 32.4%);
+  //background-color: variable.color_lighten(primary, 32.4%);
   border-color: variable.color_lighten(grey, 20%);
 }
 
