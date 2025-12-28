@@ -1,0 +1,16 @@
+<div class="stepper">
+  @for (step of steps; track $index) {
+    <div
+      class="step"
+      [class.active]="$index === currentStep"
+      [class.completed]="$index < currentStep">
+
+      <div class="circle">{{ $index + 1 }}</div>
+      <div class="label">{{ step }}</div>
+
+      @if ($index < steps.length - 1) {
+        <div class="line"></div>
+      }
+    </div>
+  }
+</div>

@@ -14,7 +14,6 @@ import { ConfigService } from '@config/config.service';
     imports: [
         HeaderComponent,
         SidebarComponent,
-        RightSidebarComponent,
         RouterOutlet,
     ]
 })

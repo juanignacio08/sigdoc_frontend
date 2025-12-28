@@ -26,8 +26,6 @@ export type ChartOptions = {
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.scss'],
     imports: [
-        RouterLink,
-        NgbProgressbar,
         NgApexchartsModule,
     ]
 })

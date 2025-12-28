@@ -27,9 +27,6 @@ import { ConfigService } from '@config/config.service';
         NgbDropdown,
         NgbDropdownToggle,
         NgbDropdownMenu,
-        NgClass,
-        NgScrollbar,
-        RouterLink,
         TranslateModule,
     ],
     providers: [RightSidebarService]

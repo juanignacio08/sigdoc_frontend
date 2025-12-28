@@ -1,113 +1,56 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationService } from '@shared/confirmation.service';
 import { ToastrMessage } from '@shared/toastrMessage';
-import { DatatableComponent, NgxDatatableModule, SelectionType } from '@swimlane/ngx-datatable';
-import { Validators } from 'ngx-editor';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
-import Swal from 'sweetalert2';
-import { ViewComponent } from './modals/view/view.component';
+import {
+  DatatableComponent,
+  NgxDatatableModule,
+} from '@swimlane/ngx-datatable';
+import { ToastrModule } from 'ngx-toastr';
 import { AdvancedSearchComponent } from './modals/advanced-search/advanced-search.component';
+import { Docente } from '@shared/models/decanatura/docente.model';
+import { ViewStatusTeacherPipe } from '@shared/pipes/view-status-teacher.pipe';
 
 @Component({
   selector: 'app-search-teacher',
   imports: [
-    NgxDatatableModule,
-    FormsModule,
-    ReactiveFormsModule,
+    NgxDatatableModule, 
     ToastrModule,
+    NgbTooltip,
+    ViewStatusTeacherPipe
   ],
   templateUrl: './search-teacher.component.html',
-  styleUrl: './search-teacher.component.scss'
+  styleUrl: './search-teacher.component.scss',
 })
 export class SearchTeacherComponent implements OnInit {
+  teacherList: Docente[] = [];
+  teacherFilterList: Docente[] = [];
 
-  columns = [
-    { name: 'First Name' },
-    { name: 'Last Name' },
-    { name: 'Phone' },
-    { name: 'Email' },
-    { name: 'Status' },
-  ];
+  pageNumber = 0;
+  pageSize = 1;
+  totalItems = 0;
 
-  rows = [];
+  loadingIndicator = true;
+  reorderable = false;
   scrollBarHorizontal = window.innerWidth < 1200;
 
-  newUserImg = 'assets/images/users/user-2.png';
-  data: any[] = [];
-  filteredData: any[] = [];
-  register!: UntypedFormGroup;
-  loadingIndicator = true;
-  isRowSelected = false;
-  selectedOption!: string;
-  reorderable = true;
-  selection!: SelectionType;
-  public selected: number[] = [];
-
   @ViewChild(DatatableComponent, { static: false }) table!: DatatableComponent;
-  @ViewChild(DatatableComponent, { static: false }) table2!: DatatableComponent;
-
-  statusType = [
-    { id: '1', value: 'Completed' },
-    { id: '2', value: 'Pending' },
-  ];
 
   constructor(
-    private fb: UntypedFormBuilder,
     private modalService: NgbModal,
     private toastrMessage: ToastrMessage,
     private confirmationService: ConfirmationService
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
-    this.fetch((data: any) => {
-      this.data = data;
-      this.filteredData = data;
-      setTimeout(() => {
-        this.loadingIndicator = false;
-      }, 500);
-    });
-    this.register = this.fb.group({
-      id: [''],
-      img: [''],
-      firstName: ['', /* [Validators.required, Validators.pattern('[a-zA-Z]+')] */],
-      lastName: [''],
-      designation: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
-      gender: ['', [Validators.required]],
-      email: [
-        '',
-        [Validators.required, Validators.minLength(5)],
-      ],
-      status: ['', [Validators.required]],
-      address: [''],
-    });
+    this.loadTeachers(0, 10);
   }
 
-    // View record
-  viewRow(row: any) {
-    const modalRef = this.modalService.open(ViewComponent, {
-      size: 'lg',
-      centered: true,
-      backdrop: 'static',
-      scrollable: true
-    });
-
-    // pasar datos al componente modal
-    modalRef.componentInstance.data = row;
-
-    // opcional: recibir resultado cuando se cierre
-    modalRef.result.then(
-      (result) => {
-        // result si cerró con close(...)
-      },
-      (reason) => {
-        // dismissed (esc o backdrop)
-      }
-    );
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.scrollBarHorizontal = window.innerWidth < 1200;
+    this.table.recalculate();
+    this.table.recalculateColumns();
   }
 
   advancedSearch() {
@@ -115,7 +58,7 @@ export class SearchTeacherComponent implements OnInit {
       size: 'lg',
       centered: true,
       backdrop: 'static',
-      scrollable: true
+      scrollable: true,
     });
 
     // pasar datos al componente modal
@@ -133,40 +76,67 @@ export class SearchTeacherComponent implements OnInit {
   }
 
   deleteRow(row: any) {
-    this.confirmationService.confirmDeletion('¿Estás seguro de eliminar?').subscribe(
-      (confirmed: boolean) => {
-
+    this.confirmationService
+      .confirmDeletion('¿Estás seguro de eliminar?')
+      .subscribe((confirmed: boolean) => {
         if (confirmed) {
           // 2. Lógica real de eliminación (puedes reemplazar esto con tu servicio HTTP)
           this.deleteRecord(row);
 
           // 3. Mostrar mensaje de éxito
           this.toastrMessage.showSuccess('¡Registro eliminado con éxito!');
-
         }
         // else, el usuario canceló la acción.
-      }
+      });
+  }
+
+  loadTeachers(page: number, size: number) {
+    console.log(`Page: ${page} | Size : ${size}`);
+    this.loadingIndicator = true;
+
+    setTimeout(() => {
+      this.teacherList = [];
+      console.log(this.teacherList);
+      
+      this.teacherFilterList = [...this.teacherList];
+      this.pageNumber = page;
+      this.pageSize = size;
+      this.totalItems = 0;
+      this.loadingIndicator = false;  
+    }, 1000);
+  }
+
+  filterDatatable(event: any) {
+    const val = event.target.value
+    .toLowerCase()
+    .trim();
+
+  // filtrar
+  const filtered = this.teacherList.filter((d: Docente) => {
+    return (
+      d.nombre?.toLowerCase().includes(val) ||
+      d.apellidoPaterno?.toLowerCase().includes(val) ||
+      d.apellidoMaterno?.toLowerCase().includes(val) ||
+      d.numDocumento?.toLowerCase().includes(val) ||
+      d.emailInstitucional?.toLowerCase().includes(val) ||
+      d.telefono?.toLowerCase().includes(val)
     );
+  });
+
+  // reset paginación
+  this.pageNumber = 0;
+  this.totalItems = filtered.length;
+
+  // aplicar slice (paginación manual)
+  this.teacherFilterList = filtered.slice(0, this.pageSize);
+
+  // reset tabla visual
+  this.table.offset = 0;
   }
-
-
-  // fetch data
-  fetch(cb: any) {
-    const req = new XMLHttpRequest();
-    req.open('GET', 'assets/data/adv-tbl-data.json');
-    req.onload = () => {
-      const data = JSON.parse(req.response);
-      cb(data);
-    };
-    req.send();
-  }
-
-
-
-
+  
   // delete single row
   deleteRecord(row: any) {
-    this.data = this.arrayRemove(this.data, row.id);
+    this.teacherList = this.arrayRemove(this.teacherList, row.id);
   }
 
   arrayRemove(array: any[], id: any) {
@@ -175,37 +145,11 @@ export class SearchTeacherComponent implements OnInit {
     });
   }
 
-  // filter table data
-  filterDatatable(event: any) {
-    // get the value of the key pressed and make it lowercase
-    const val = event.target.value.toLowerCase();
-    // get the amount of columns in the table
-    const colsAmt = this.columns.length;
-    // get the key names of each column in the dataset
-    const keys = Object.keys(this.filteredData[0]);
-    // assign filtered matches to the active datatable
-
-    this.data = this.filteredData.filter((item) => {
-      // iterate through each row's column data
-      for (let i = 0; i < colsAmt; i++) {
-        // check for a match
-        if (
-          item[keys[i]].toString().toLowerCase().indexOf(val) !== -1 ||
-          !val
-        ) {
-          // found match, return true to add to result set
-          return true;
-        }
-      }
-      return false;
-    });
-    // whenever the filter changes, always go back to the first page
-    this.table.offset = 0;
+  onPage(event : any) {
+    this.pageNumber = event.offset;
+    console.log(this.pageNumber);
+    
+    this.loadTeachers(this.pageNumber, 10);
   }
 
-  // get random id
-  getId(min: number, max: number) {
-    // min and max included
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
 }

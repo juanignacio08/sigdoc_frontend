@@ -1,7 +1,6 @@
 .search-wrapper {
   position: relative;
   display: inline-block;
-  width: 100%;
 }
 
 .search-wrapper .search-icon {
@@ -12,4 +11,8 @@
   color: #6c757d;
   pointer-events: none;
   font-size: 20px;
+}
+
+.search-wrapper input {
+  padding-left: 40px;
 }
