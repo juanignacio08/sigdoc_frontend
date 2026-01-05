@@ -1,3 +1,4 @@
+import { PaginatedResponseDTO } from "../base/paginateddto.model";
 import { ResponseDTO } from "../base/responsedto.model";
 import { TablaMaestra } from "../maestros/tablamaestra.model";
 import { Ubigeo } from "../maestros/ubigeo.model";
@@ -41,5 +42,27 @@ export interface DocenteRequest {
   estado : number
 }
 
+export interface DocenteFilter {
+  typeDocument ?: string,
+  documentNumber ?: string,
+  name ?: string,
+  lastName1 ?: string,
+  lastName2 ?: string,
+  birthdateStart ?: string,
+  birthdateEnd ?: string,
+  personalEmail ?: string,
+  institutionalEmail ?: string,
+  gender ?: string,
+  ubigeoActual ?: string,
+  nivelActual ?: number,
+  ubigeoProcedencia ?: string,
+  nivelProcedencia ?: number,
+  maritalStatus ?: string,
+  status ?: number,
+  dateCreationStart ?: number,
+  dateCreationEnd ?: number
+}
+
 export type DocenteResponse = ResponseDTO<Docente>;
 export type DocenteListResponse = ResponseDTO<Docente[]>;
+export type DocenteResponseListPaginated = PaginatedResponseDTO<Docente[]>;

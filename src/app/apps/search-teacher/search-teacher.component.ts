@@ -1,4 +1,10 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationService } from '@shared/confirmation.service';
 import { ToastrMessage } from '@shared/toastrMessage';
@@ -6,18 +12,19 @@ import {
   DatatableComponent,
   NgxDatatableModule,
 } from '@swimlane/ngx-datatable';
-import { ToastrModule } from 'ngx-toastr';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { AdvancedSearchComponent } from './modals/advanced-search/advanced-search.component';
-import { Docente } from '@shared/models/decanatura/docente.model';
+import { Docente, DocenteFilter } from '@shared/models/decanatura/docente.model';
 import { ViewStatusTeacherPipe } from '@shared/pipes/view-status-teacher.pipe';
+import { DocenteService } from 'app/services/decanatura/docente.service';
 
 @Component({
   selector: 'app-search-teacher',
   imports: [
-    NgxDatatableModule, 
+    NgxDatatableModule,
     ToastrModule,
     NgbTooltip,
-    ViewStatusTeacherPipe
+    ViewStatusTeacherPipe,
   ],
   templateUrl: './search-teacher.component.html',
   styleUrl: './search-teacher.component.scss',
@@ -29,21 +36,27 @@ export class SearchTeacherComponent implements OnInit {
   pageNumber = 0;
   pageSize = 1;
   totalItems = 0;
+  pageSizeOptions = [10, 20, 50, 100];
 
   loadingIndicator = true;
   reorderable = false;
   scrollBarHorizontal = window.innerWidth < 1200;
 
+  docenteFilter : DocenteFilter | null = null;
+
   @ViewChild(DatatableComponent, { static: false }) table!: DatatableComponent;
+
+  docenteService = inject(DocenteService);
 
   constructor(
     private modalService: NgbModal,
     private toastrMessage: ToastrMessage,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
-    this.loadTeachers(0, 10);
+    this.loadTeachers(0, 10, this.docenteFilter);
   }
 
   @HostListener('window:resize', ['$event'])
@@ -61,13 +74,13 @@ export class SearchTeacherComponent implements OnInit {
       scrollable: true,
     });
 
-    // pasar datos al componente modal
-    //modalRef.componentInstance.data = row;
-
     // opcional: recibir resultado cuando se cierre
     modalRef.result.then(
       (result) => {
-        // result si cerró con close(...)
+        this.docenteFilter = result;
+        this.pageNumber = 0;
+        this.pageSize = 10;
+        this.loadTeachers(this.pageNumber, this.pageSize, this.docenteFilter);
       },
       (reason) => {
         // dismissed (esc o backdrop)
@@ -90,50 +103,81 @@ export class SearchTeacherComponent implements OnInit {
       });
   }
 
-  loadTeachers(page: number, size: number) {
-    console.log(`Page: ${page} | Size : ${size}`);
+  loadTeachers(page: number, size: number, docenteFilter : DocenteFilter | null) {
     this.loadingIndicator = true;
+    if (docenteFilter === null) this.loadAllTeacher(page, size);
+    else this.loadFilterTeacher(page, size, docenteFilter);
+  }
 
-    setTimeout(() => {
-      this.teacherList = [];
-      console.log(this.teacherList);
-      
-      this.teacherFilterList = [...this.teacherList];
-      this.pageNumber = page;
-      this.pageSize = size;
-      this.totalItems = 0;
-      this.loadingIndicator = false;  
-    }, 1000);
+  loadFilterTeacher(page: number, size: number, docenteFilter: DocenteFilter) {
+    this.docenteService.getAllByFilters(docenteFilter, page, size).subscribe({
+      next: (response) => {
+        this.teacherList = response.data;
+        this.teacherFilterList = [...this.teacherList];
+        this.pageNumber = response.currentPage;
+        this.pageSize = size;
+        this.totalItems = response.totalItems;
+        this.loadingIndicator = false;
+      },
+      error: (err) => {
+        this.loadingIndicator = false;
+        if (err.error.detail) {
+          this.showError(err.error.detail);
+        } else {
+          this.showError('Error desconocido. Intentelo de nuevo...');
+        }
+      },
+    });
+  }
+
+  loadAllTeacher(page: number, size: number) {
+    this.docenteService.getAllPage(0, 10).subscribe({
+      next: (response) => {
+        this.teacherList = response.data;
+        this.teacherFilterList = [...this.teacherList];
+        this.pageNumber = response.currentPage;
+        this.pageSize = size;
+        this.totalItems = response.totalItems;
+        this.loadingIndicator = false;
+      },
+      error: (err) => {
+        this.loadingIndicator = false;
+        if (err.error.detail) {
+          this.showError(err.error.detail);
+        } else {
+          this.showError('Error desconocido. Intentelo de nuevo...');
+        }
+      },
+    });
   }
 
   filterDatatable(event: any) {
-    const val = event.target.value
-    .toLowerCase()
-    .trim();
+    const val = event.target.value.toLowerCase().trim();
 
-  // filtrar
-  const filtered = this.teacherList.filter((d: Docente) => {
-    return (
-      d.nombre?.toLowerCase().includes(val) ||
-      d.apellidoPaterno?.toLowerCase().includes(val) ||
-      d.apellidoMaterno?.toLowerCase().includes(val) ||
-      d.numDocumento?.toLowerCase().includes(val) ||
-      d.emailInstitucional?.toLowerCase().includes(val) ||
-      d.telefono?.toLowerCase().includes(val)
-    );
-  });
+    // filtrar
+    const filtered = this.teacherList.filter((d: Docente) => {
+      return (
+        d.nombre?.toLowerCase().includes(val) ||
+        d.apellidoPaterno?.toLowerCase().includes(val) ||
+        d.apellidoMaterno?.toLowerCase().includes(val) ||
+        d.numDocumento?.toLowerCase().includes(val) ||
+        d.emailPersonal?.toLowerCase().includes(val) ||
+        d.emailInstitucional?.toLowerCase().includes(val) ||
+        d.telefono?.toLowerCase().includes(val)
+      );
+    });
 
-  // reset paginación
-  this.pageNumber = 0;
-  this.totalItems = filtered.length;
+    // reset paginación
+    this.pageNumber = 0;
+    this.totalItems = filtered.length;
 
-  // aplicar slice (paginación manual)
-  this.teacherFilterList = filtered.slice(0, this.pageSize);
+    // aplicar slice (paginación manual)
+    this.teacherFilterList = filtered.slice(0, this.pageSize);
 
-  // reset tabla visual
-  this.table.offset = 0;
+    // reset tabla visual
+    this.table.offset = 0;
   }
-  
+
   // delete single row
   deleteRecord(row: any) {
     this.teacherList = this.arrayRemove(this.teacherList, row.id);
@@ -145,11 +189,31 @@ export class SearchTeacherComponent implements OnInit {
     });
   }
 
-  onPage(event : any) {
+  onPage(event: any) {
     this.pageNumber = event.offset;
-    console.log(this.pageNumber);
-    
-    this.loadTeachers(this.pageNumber, 10);
+    this.loadTeachers(this.pageNumber, this.pageSize, this.docenteFilter);
+  }
+
+  showError(message: string) {
+    this.toastr.error(message, 'Error!');
+  }
+
+  showInfo(message: string) {
+    this.toastr.info(message, 'Información');
+  }
+
+  onPageSizeChange(event: Event) {
+    const value = Number((event.target as HTMLSelectElement).value);
+    this.pageSize = value;
+    this.pageNumber = 0;   
+    this.loadTeachers(this.pageNumber, this.pageSize, this.docenteFilter); 
+  }
+
+  clearFilters() {
+    this.docenteFilter = null;
+    this.pageNumber = 0;
+    this.pageSize = 10;
+    this.loadTeachers(0, 10, this.docenteFilter);
   }
 
 }

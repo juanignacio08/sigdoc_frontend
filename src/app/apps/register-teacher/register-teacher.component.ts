@@ -16,7 +16,6 @@ import { Ubigeo } from '@shared/models/maestros/ubigeo.model';
 import { DocenteService } from 'app/services/decanatura/docente.service';
 import { TablaMaestraService } from 'app/services/maestros/tabla-maestra.service';
 import { UbigeoService } from 'app/services/maestros/ubigeo.service';
-import { number } from 'echarts';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

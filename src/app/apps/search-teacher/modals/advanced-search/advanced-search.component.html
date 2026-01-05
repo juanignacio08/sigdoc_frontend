@@ -1,29 +1,332 @@
-<div class="modal-header">
+<div class="modal-header p-3">
     <h5 class="modal-title">Búsqueda Avanzada</h5>
-
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true"><i class="material-icons">close</i></span>
+    </button>
 </div>
-
 <div class="modal-body">
-    <div class="row">
-        <div class="form-group col-sm-6">
-            <label for="inputEmail4">Email</label>
-            <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
-        </div>
-    </div>
+    <form [formGroup]="teacherFilterForm">
+        <div class="row align-items-top border">
+            <p class="fs-6 fw-bold pt-3">Informacion Básica</p>
+            <!-- DOCUMENT TYPE -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    @if (loadingDocumentType) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="documentType">Tipo de Documento
+                        @if (errorDocumentType) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryDocumentTypes()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-address-book input-icons"></i>
+                    <select id="documentType" class="form-select form-control psl-5" formControlName="documentType">
+                        @if (loadingDocumentType) {
+                        <option disabled selected>Cargando tipos de documento...</option>
+                        } @else {
+                        <option [value]="null">Seleccione...</option>
+                        @for (item of documentTypeList; track $index) {
+                        <option [value]="item.codigo">{{item.denominacion}}</option>
+                        }
+                        }
 
-    <div class="row mt-3">
-        <div class="form-group col-sm-4">
-            <label>Select</label>
-            <select class="form-select form-control">
-                <option>Option 1</option>
-                <option>Option 2</option>
-                <option>Option 3</option>
-            </select>
+                    </select>
+                </div>
+            </div>
+            <!-- DOCMUENT NUMBER -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    <label for="numDocument">Nro de Documento</label>
+                    <i class="fas fa-address-card input-icons"></i>
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control psl-5"
+                        placeholder="Número de Documento" id="numDocument" formControlName="numDocument"
+                        [class.is-invalid]="isInvalid('numDocument')" (keypress)="onlyNumbers($event)">
+                </div>
+            </div>
+            <!-- TEACHER STATUS -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    @if (loadingDocumentType) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="teacherStatus">Estado
+                        @if (errorDocumentType) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryDocumentTypes()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-address-book input-icons"></i>
+                    <select id="teacherStatus" class="form-select form-control psl-5" formControlName="teacherStatus">
+                        @if (loadingDocumentType) {
+                        <option disabled selected>Cargando tipos de documento...</option>
+                        } @else {
+                        <option [value]="null">Seleccione...</option>
+                        @for (item of documentTypeList; track $index) {
+                        <option [value]="item.codigo">{{item.denominacion}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- NAME -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    <label for="nameTeacher">Nombre</label>
+                    <i class="fas fa-user input-icons"></i>
+                    <input type="text" class="form-control psl-5" placeholder="Nombre" id="nameTeacher"
+                        formControlName="nameTeacher">
+                </div>
+            </div>
+            <!-- LASTNAME ONE -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    <label for="apellidoPaterno">Apellido Paterno</label>
+                    <i class="fas fa-user input-icons"></i>
+                    <input type="text" class="form-control psl-5" placeholder="Apellido Paterno" id="apellidoPaterno"
+                        formControlName="apellidoPaterno">
+                </div>
+            </div>
+            <!-- LASTNAME TWO -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    <label for="apellidoMaterno">Apellido Materno</label>
+                    <i class="fas fa-user input-icons"></i>
+                    <input type="text" class="form-control psl-5" placeholder="Apellido Materno" id="apellidoMaterno"
+                        formControlName="apellidoMaterno">
+                </div>
+            </div>
+
+            <!-- PERSONAL EMAIL -->
+            <div class="col-12 col-md-6">
+                <div class="form-group position-relative">
+                    <label for="personalEmail">Email Personal</label>
+                    <i class="fas fa-envelope input-icons"></i>
+                    <input type="email" class="form-control psl-5" placeholder="Email Personal" id="personalEmail"
+                        formControlName="personalEmail">
+                </div>
+            </div>
+            <!-- INSTITUTIONAL EMAIL -->
+            <div class="col-12 col-md-6">
+                <div class="form-group position-relative">
+                    <label for="institutionalEmail">Email Institucional</label>
+                    <i class="fas fa-envelope input-icons"></i>
+                    <input type="email" class="form-control psl-5" placeholder="Email Personal" id="institutionalEmail"
+                        formControlName="institutionalEmail">
+                </div>
+            </div>
+
+            <!-- GENDER -->
+            <div class="col-12 col-md-6">
+                <div class="form-group position-relative">
+                    @if (loadingGender) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="gender">Genero
+                        @if (errorGender) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryGender()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-angle-double-down input-icons"></i>
+                    <select id="gender" class="form-select form-control psl-5" formControlName="gender">
+                        @if (loadingGender) {
+                        <option disabled>Cargando las opciones...</option>
+                        } @else {
+                        <option [value]='null'>Seleccione</option>
+                        @for (item of genderList; track $index) {
+                        <option [value]="item.codigo">{{item.denominacion}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+            <!-- MARITAL STATUS -->
+            <div class="col-12 col-md-6">
+                <div class="form-group position-relative">
+                    @if (loadingMaritalStatus) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="maritalStatus">Estado Civil
+                        @if (errorMaritalStatus) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryMaritalStatus()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-angle-double-down input-icons"></i>
+                    <select id="maritalStatus" class="form-select form-control psl-5" formControlName="maritalStatus">
+                        @if (loadingMaritalStatus) {
+                        <option disabled selected>Cargando las opciones...</option>
+                        } @else {
+                        <option [value]="null" selected disabled>Seleccione</option>
+                        @for (item of maritalStatusList; track $index) {
+                        <option [value]="item.codigo">{{item.denominacion}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- ADDRESS NOW -->
+            <span class="text-label pb-2">Dirección Actual</span>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    @if (loadingDepartments) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    @if (errorDepartments) {
+                    <a style="cursor: pointer;" class="text-danger" (click)="retryDepartments()">(Ocurrio un
+                        error...)</a>
+                    }
+                    <select class="form-select form-control" id="regionActual" formControlName="regionActual">
+                        @if (loadingDepartments) {
+                        <option disabled selected>Cargando las regiones...</option>
+                        } @else {
+                        <option [value]="null" selected disabled>Región</option>
+                        @for (item of departmentsList; track $index) {
+                        <option [value]="item.codigoRegion">{{item.denominacionRegion}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    @if (loadingProvincesNow) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    @if (errorProvincesNow) {
+                    <a style="cursor: pointer;" class="text-danger" (click)="retryProvincesNow()">(Ocurrio un
+                        error...)</a>
+                    }
+                    <select class="form-select form-control" id="provinciaActual" formControlName="provinciaActual">
+                        @if (loadingProvincesNow) {
+                        <option disabled selected>Cargando las provincias...</option>
+                        } @else {
+                        <option [value]="null" selected disabled>Provincia</option>
+                        @for (item of provincesListNow; track $index) {
+                        <option [value]="item.codigoProvincia">{{item.denominacionProvincia}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    @if (loadingDistrictsNow) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    @if (errorDistrictsNow) {
+                    <a style="cursor: pointer;" class="text-danger" (click)="retryDistrictsNow()">(Ocurrio un
+                        error...)</a>
+                    }
+                    <select class="form-select form-control" id="distritoActual" formControlName="distritoActual">
+                        @if (loadingDistrictsNow) {
+                        <option disabled selected>Cargando los distritos...</option>
+                        } @else {
+                        <option [value]="null" selected disabled>Distrito</option>
+                        @for (item of districtsListNow; track $index) {
+                        <option [value]="item.codigoUbigeo">{{item.denominacionDistrito}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- ADDRESS ORIGIN -->
+            <span class="text-label pb-2">Dirección de Procedencia</span>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    @if (loadingDepartments) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    @if (errorDepartments) {
+                    <a style="cursor: pointer;" class="text-danger" (click)="retryDepartments()">(Ocurrio un
+                        error...)</a>
+                    }
+                    <select class="form-select form-control" id="regionProcedencia" formControlName="regionProcedencia">
+                        @if (loadingDepartments) {
+                        <option disabled selected>Cargando las regiones...</option>
+                        } @else {
+                        <option [value]="null" selected disabled>Región</option>
+                        @for (item of departmentsList; track $index) {
+                        <option [value]="item.codigoRegion">{{item.denominacionRegion}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    @if (loadingProvincesProcedencia) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    @if (errorProvincesProcedencia) {
+                    <a style="cursor: pointer;" class="text-danger" (click)="retryProvincesProcedencia()">(Ocurrio un
+                        error...)</a>
+                    }
+                    <select class="form-select form-control" id="provinciaProcedencia"
+                        formControlName="provinciaProcedencia">
+                        @if (loadingProvincesProcedencia) {
+                        <option disabled selected>Cargando las provincias...</option>
+                        } @else {
+                        <option [value]="null" selected disabled>Provincia</option>
+                        @for (item of provincesListProcedencia; track $index) {
+                        <option [value]="item.codigoProvincia">{{item.denominacionProvincia}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="form-group">
+                    @if (loadingDistrictsProcedencia) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    @if (errorDistrictsProcedencia) {
+                    <a style="cursor: pointer;" class="text-danger" (click)="retryDistrictsProcedencia()">(Ocurrio un
+                        error...)</a>
+                    }
+                    <select class="form-select form-control" id="distritoProcedencia"
+                        formControlName="distritoProcedencia">
+                        @if (loadingDistrictsProcedencia) {
+                        <option disabled selected>Cargando los distritos...</option>
+                        } @else {
+                        <option [value]="null" disabled>Distrito</option>
+                        @for (item of districtsListProcedencia; track $index) {
+                        <option [value]="item.codigoUbigeo">{{item.denominacionDistrito}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- BIRTHDATE -->
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label for="birthdateStart">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="birthdateStart" formControlName="birthdateStart">
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label for="birthdateEnd">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="birthdateEnd" formControlName="birthdateEnd">
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-primary" (click)="save()">Guardar</button>
+    @if (loadingSaveTeacher) {
+    <button type="submit" class="btn btn-primary btn-progress" placement="top" ngbTooltip="Guardando..."
+        [disabled]="loadingSaveTeacher"><i class="fas fa-save"></i> Guardar</button>
+    }@else {
+    <button class="btn btn-primary btn-icon icon-left me-3" placement="top"
+        ngbTooltip="Realizar Busqueda" [disabled]="loadingSaveTeacher" (click)="search()"><i class="fas fa-save"></i>
+        Buscar</button>
+    }
     <button class="btn btn-secondary" (click)="close()">Cancelar</button>
 </div>
