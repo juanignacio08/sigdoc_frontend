@@ -1,0 +1,67 @@
+<div class="modal-header p-0">
+    <div class="container p-3">
+        <div class="row align-items-center mb-0">
+            <div class="col-2 text-success text-center">
+                <i class="far fa-check-circle fs-2"></i>
+            </div>
+            <div class="col-10">
+                <p class="fs-5 fw-bold text-main mb-0">Registro Exitoso</p>
+                <p class="text-main mb-0">La información ha sido registrada correctamente.</p>
+            </div>
+        </div>
+        <hr class="mb-0 mt-2">
+    </div>
+</div>
+
+<div class="modal-body p-0">
+    <div class="container px-3">
+        <div class="row px-3 gy-1">
+            <div class="col-12">
+                <p class="text-main fw-bold">Nombre Completo: <span class="fw-normal">{{ teacher?.nombre + " " +
+                        teacher?.apellidoPaterno + " " + teacher?.apellidoMaterno }}</span></p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="text-main fw-bold">Tipo de Documento: <span class="fw-normal">{{
+                        teacher?.codTipoDocumento?.denominacion || '- - -' }}</span></p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="text-main fw-bold">Número de Documento: <span class="fw-normal">{{ teacher?.numDocumento || '- - -' }}</span></p>
+            </div>
+            <div class="col-12">
+                <p class="text-main fw-bold">Email Personal: <span class="fw-normal">{{ teacher?.emailPersonal || '- - -' }}</span></p>
+            </div>
+            <div class="col-12">
+                <p class="text-main fw-bold">Email Institucional: <span class="fw-normal">{{ teacher?.emailInstitucional || '- - -' }}</span></p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="text-main fw-bold">Celular: <span class="fw-normal">{{ teacher?.telefono || '- - -' }}</span>
+                </p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="text-main fw-bold">Fecha de Nacimiento: <span class="fw-normal">{{ teacher?.fechaNacimiento || '- - -' }}</span></p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="text-main fw-bold">Género: <span class="fw-normal">{{ teacher?.codGenero?.denominacion || '- - -' }}</span></p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="text-main fw-bold">Estado Civil: <span class="fw-normal">{{
+                        teacher?.codEstadoCivil?.denominacion || '- - -'}}</span></p>
+            </div>
+            <div class="col-12">
+                <p class="text-main fw-bold">Dirección: <span class="fw-normal">{{ teacher?.direccion || '- - -' }}</span></p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="text-main fw-bold">Región Actual: <span class="fw-normal">{{
+                        teacher?.codUbigeoActual?.denominacionRegion || '- - -' }}</span></p>
+            </div>
+            <div class="col-12 col-md-6">
+                <p class="text-main fw-bold">Región de Procedencia: <span class="fw-normal">{{
+                        teacher?.codUbigeoProcedencia?.denominacionRegion || '- - -'}}</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-info" (click)="close()">Cerrar</button>
+</div>

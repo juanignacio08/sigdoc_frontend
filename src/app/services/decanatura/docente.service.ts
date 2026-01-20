@@ -20,6 +20,11 @@ export class DocenteService {
     return this.http.post<DocenteResponse>(url, teacher);
   }
 
+  update(teacher : DocenteRequest): Observable<DocenteResponse> {
+    const url = `${this.baseUrl}/update`;
+    return this.http.put<DocenteResponse>(url, teacher);
+  }
+
   getDetail(documentNumber : string): Observable<DocenteResponse> {
     const url = `${this.baseUrl}/getDetail?documentNumber=${documentNumber}`;
     return this.http.get<DocenteResponse>(url);
