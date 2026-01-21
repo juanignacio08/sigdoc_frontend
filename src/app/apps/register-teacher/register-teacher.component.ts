@@ -1,12 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import {
-  ActivatedRoute,
+  NavigationEnd,
   Router,
   RouterOutlet,
 } from '@angular/router';
 import { StepperComponent } from '@shared/components/stepper/stepper.component';
 import { SessionStorageService } from 'app/services/session-storage/session-storage.service';
-import { ToastrService } from 'ngx-toastr';
+
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-register-teacher',
@@ -18,72 +19,37 @@ export class RegisterTeacherComponent implements OnInit {
   currentStep = 0;
   sectionTitle: string = 'Datos Personales';
 
+  private readonly stepMap: Record<string, { step: number; title: string }> = {
+    'personal-data': { step: 0, title: 'Datos Personales' },
+    'academic-data': { step: 1, title: 'Formación Académica' },
+  };
+
   sessionStorageService = inject(SessionStorageService);
 
   constructor(
-    private toastr: ToastrService,
     private router: Router,
-    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    this.currentStep =
-      this.sessionStorageService.get<number>('currentStep') || 0;
-    this.sectionTitle =
-      this.sessionStorageService.get<string>('sectionTitle') ||
-      'Datos Personales';
+    this.syncStepWithRoute(this.router.url);
+
+    this.router.events
+    .pipe(filter(event => event instanceof NavigationEnd))
+    .subscribe((event: NavigationEnd) => {
+      this.syncStepWithRoute(event.urlAfterRedirects);    
+    });
+    
   }
 
-  goToNextStep() {
-    this.currentStep++;
+  private syncStepWithRoute(url: string): void {
+    const segment = url.split('/').pop();
+    if (!segment) return;
 
-    console.log(this.currentStep);
+    const config = this.stepMap[segment];
+    if (!config) return;
 
-    switch (this.currentStep) {
-      case 0:
-        this.router.navigate(['personal-data'], {
-          relativeTo: this.route,
-        });
-        break;
-      case 1:
-        //this.getAcademicDataArray().push(this.createAcademicDataForm());
-        this.router.navigate(['academic-data'], {
-          relativeTo: this.route,
-        });
-        break;
-    }
+    this.currentStep = config.step;
+    this.sectionTitle = config.title;
   }
 
-  // saveAcademic(index: number) {
-  //   const form = this.getAcademicDataArray().at(index) as FormGroup;
-
-  //   if (form.invalid) return;
-
-  //   const payload = form.value;
-
-  //   console.log(payload);
-
-  //   // this.academicService.save(payload).subscribe({
-  //   //   next: () => {
-  //   //     form.patchValue({ saved: true });
-  //   //     form.disable(); // opcional: bloquear después de guardar
-  //   //   },
-  //   // });
-  // }
-
-  // createAcademicDataForm(): FormGroup {
-  //   return this.fb.group({
-  //     codGradoAcademico: [null, Validators.required],
-  //     tituloProfesional: ['', Validators.required],
-  //     institucionEgreso: ['', Validators.required],
-  //     fechaObtencion: [null, Validators.required],
-  //     especialidad: ['', Validators.required],
-  //     estado: [1],
-  //     saved: [false],
-  //   });
-  // }
-
-  // getAcademicDataArray() {
-  //   return this.teacherForm.get('academicData') as FormArray;
-  // }
 }

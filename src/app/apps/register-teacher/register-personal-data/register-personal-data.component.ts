@@ -1,11 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import {
-  ControlContainer,
   FormBuilder,
   FormGroup,
-  FormGroupDirective,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
@@ -29,6 +27,9 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './register-personal-data.component.scss',
 })
 export class RegisterPersonalDataComponent implements OnInit {
+
+  @Output() nextStep = new EventEmitter<void>();
+
   teacherActive?: Docente | null;
 
   ubigeoActual?: string;
@@ -69,8 +70,6 @@ export class RegisterPersonalDataComponent implements OnInit {
   errorSearchTeacher: boolean = false;
   errorSaveTeacher: boolean = false;
 
-  private initialValue!: any;
-
   masterTableService = inject(TablaMaestraService);
   ubigeoService = inject(UbigeoService);
   docenteService = inject(DocenteService);
@@ -87,10 +86,7 @@ export class RegisterPersonalDataComponent implements OnInit {
   ngOnInit(): void {
     this.teacherActive =
       this.sessionStorageService.get<Docente>('teacherActive');
-
-    this.sessionStorageService.set('currentStep', 0);
-    this.sessionStorageService.set('sectionTitle', 'Datos Personales');
-
+    
     this.initForm();
 
     if (this.teacherActive) {
@@ -309,10 +305,8 @@ export class RegisterPersonalDataComponent implements OnInit {
         this.personalForm.get('distritoActual')?.enable();
 
         if (this.ubigeoActual) {
-          console.log('existe ubigeo actual distrito');
           this.personalForm.get('distritoActual')?.setValue(this.ubigeoActual);
         } else {
-          console.log('no existe ubigeo actual distrito');
           this.personalForm.get('distritoActual')?.setValue(null);
         }
       },
@@ -343,12 +337,10 @@ export class RegisterPersonalDataComponent implements OnInit {
         this.personalForm.get('provinciaProcedencia')?.enable();
 
         if (this.ubigeoProcedencia) {
-          console.log('Existe Ubigeo Procedencia Provincia');
           this.personalForm
             .get('provinciaProcedencia')
             ?.setValue(this.getAllByUbigeoCode(this.ubigeoProcedencia, 2));
         } else {
-          console.log('NO Existe Ubigeo Procedencia Provincia');
           this.personalForm.get('provinciaProcedencia')?.setValue(null);
         }
       },
@@ -381,7 +373,6 @@ export class RegisterPersonalDataComponent implements OnInit {
           console.log('distrito en null');
         }
         if (this.ubigeoProcedencia) {
-          console.log('Existe Ubigeo Procedencia DISTRITO');
           this.personalForm
             .get('distritoProcedencia')
             ?.setValue(this.ubigeoProcedencia);
@@ -487,8 +478,6 @@ export class RegisterPersonalDataComponent implements OnInit {
 
   goToNextStep() {
     if (this.teacherActive) {
-      this.sessionStorageService.set('teacherActive', this.teacherActive);
-      this.sessionStorageService.set('currentStep', 1);
       this.router.navigate(['../academic-data'], {
         relativeTo: this.route,
       });
@@ -740,17 +729,13 @@ export class RegisterPersonalDataComponent implements OnInit {
   }
 
   private getAllByUbigeoCode(ubigeoCode: string, nivel: number): string | null {
-    console.log(ubigeoCode);
-
     if (ubigeoCode !== null && ubigeoCode !== undefined) {
       switch (nivel) {
         case 1:
           return ubigeoCode.slice(0, 2);
         case 2:
-          console.log(ubigeoCode.slice(2, 4));
           return ubigeoCode.slice(2, 4);
         case 3:
-          console.log(ubigeoCode.slice(4, 6));
           return ubigeoCode.slice(4, 6);
         default:
           return '';
