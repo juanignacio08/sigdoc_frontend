@@ -22,6 +22,9 @@ export class RegisterTeacherComponent implements OnInit {
   private readonly stepMap: Record<string, { step: number; title: string }> = {
     'personal-data': { step: 0, title: 'Datos Personales' },
     'academic-data': { step: 1, title: 'Formación Académica' },
+    'work-data': {step: 2, title: 'Información Profesional'},
+    'work-experience-data': { step: 3, title: 'Experiencia Profesional' },
+    'languages-data': {step: 4, title: 'Idiomas'}
   };
 
   sessionStorageService = inject(SessionStorageService);

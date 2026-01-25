@@ -1,0 +1,161 @@
+@if (action === 'delete') {
+<div class="row p-3 pt-4">
+    <div class="col-12 text-center text-danger">
+        <p class="fs-4 fw-bold">¿Esta seguro de eliminar el grado académico?</p>
+        <p class="text-main pb-0 mb-0">{{teacherAcademic?.codGradoAcademico?.denominacion + ' - ' + teacherAcademic?.tituloProfesional}}</p>
+        <p class="text-main pt-0 mt-0">{{teacherAcademic?.institucionEgreso}}</p>
+    </div>
+    <div class="col-12 text-center mt-2 mb-0">
+        <button class="btn btn-danger me-2" (click)="confirmDelete()">Si</button>
+        <button class="btn btn-info ms-2" (click)="close()">No</button>
+    </div>
+</div>
+} @else {
+<div class="modal-header p-0">
+    <div class="container p-3 pt-4">
+        <div class="row align-items-center mb-0">
+            <div class="col-2 text-success text-center">
+                <i class="far fa-file-alt fs-2"></i>
+            </div>
+            <div class="col-10">
+                <p class="fs-5 fw-bold text-main mb-0">{{title}}</p>
+            </div>
+        </div>
+        <hr class="mb-0 mt-2">
+    </div>
+</div>
+
+<div class="modal-body p-0">
+    @if (action !== 'view') {
+    <form [formGroup]="academicInfoForm">
+        <div class="container px-3">
+            <div class="row px-3">
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control form-control-sm" id="tituloProfesional"
+                            placeholder="Escribe tu carrera..." formControlName="tituloProfesional"
+                            [class.is-invalid]="isInvalid('tituloProfesional')" (input)="onInputProfession()"
+                            (blur)="cerrarListaProfession()" (focus)="mostrarListaCarrera = true">
+                        <label for="tituloProfesional">Título Profesional</label>
+
+                        @if (mostrarListaCarrera && resultadoCarrera.length > 0) {
+                        <ul class="list-group">
+                            @for (carrera of resultadoCarrera; track $index) {
+                            <li class="list-group-item list-group-item-action py-1" style="cursor: pointer;"
+                                (click)="seleccionarProfession(carrera)">
+                                {{ carrera.nombre }}
+                            </li>
+                            }
+                        </ul>
+                        }
+
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control form-control-sm" id="institucionEgreso"
+                            formControlName="institucionEgreso" [class.is-invalid]="isInvalid('institucionEgreso')"
+                            (input)="onInputUniversity()" (blur)="cerrarListaUniversity()"
+                            (focus)="mostrarListaUniversidad = true"
+                            [class.is-invalid]="isInvalid('institucionEgreso')">
+                        <label for="institucionEgreso">Institución</label>
+
+                        @if (mostrarListaUniversidad && resultadoUniversidad.length > 0) {
+                        <ul class="list-group">
+                            @for (universidad of resultadoUniversidad; track $index) {
+                            <li class="list-group-item list-group-item-action py-1" style="cursor: pointer;"
+                                (click)="seleccionarUniversity(universidad)">
+                                {{ universidad.nombre }}
+                            </li>
+                            }
+                        </ul>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <select class="form-select form-select-sm" id="codGradoAcademico"
+                            formControlName="codGradoAcademico" [class.is-invalid]="isInvalid('codGradoAcademico')">
+                            @if (controls.codeAcademicGrade.loading) {
+                            <option disabled selected>Cargando los grados académicos...</option>
+                            } @else {
+                            <option [value]="null" disabled>Grado Académico</option>
+                            @for (item of academicGradeList; track $index) {
+                            <option [value]="item.codigo">{{item.denominacion}}</option>
+                            }
+                            }
+                        </select>
+                        @if (controls.codeAcademicGrade.loading) {
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                        }
+                        @if (controls.codeAcademicGrade.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryAcademicGrade()">(Ocurrio un
+                            error...)</a>
+                        }
+                        <label for="codGradoAcademico">Grado Académico</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control form-control-sm" id="fechaObtencion"
+                            formControlName="fechaObtencion">
+                        <label for="fechaObtencion">Fecha de Egreso</label>
+
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control form-control-sm" id="especialidad"
+                            formControlName="especialidad">
+                        <label for="especialidad">Especialidad</label>
+
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="file" id="documento" class="form-control form-control-sm"
+                            formControlName="documento">
+                        <label for="documento">Documento</label>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    } @else {
+    <div class="container px-3">
+        <div class="row px-3 gy-1">
+            <div class="col-12">
+                <p class="text-main fw-bold">Grado Académico: <span class="fw-normal">{{ teacherAcademic?.codGradoAcademico?.denominacion || '- - -'}}</span></p>
+            </div>
+            <div class="col-12">
+                <p class="text-main fw-bold">Título Profesional: <span class="fw-normal">{{
+                        teacherAcademic?.tituloProfesional || '- - -' }}</span></p>
+            </div>
+            <div class="col-12">
+                <p class="text-main fw-bold">Institución: <span class="fw-normal">{{ teacherAcademic?.institucionEgreso || '- - -' }}</span></p>
+            </div>
+            <div class="col-12">
+                <p class="text-main fw-bold">Fecha de Egreso: <span class="fw-normal">{{ teacherAcademic?.fechaObtencion || '- - -' }}</span></p>
+            </div>
+            <div class="col-12">
+                <p class="text-main fw-bold">Especialidad: <span class="fw-normal">{{ teacherAcademic?.especialidad || '- - -' }}</span></p>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+<div class="modal-footer">
+    @if (action !== 'view') {
+        <button type="submit" class="btn btn-success btn-icon icon-left me-3" placement="top"
+        ngbTooltip="Guardar Información" [disabled]="!academicInfoForm.valid" (click)="submit()"><i
+            class="fas fa-save"></i>
+        Guardar</button>
+    }
+    <button class="btn btn-info" (click)="close()">Cerrar</button>
+</div>    
+}

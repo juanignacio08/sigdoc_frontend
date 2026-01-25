@@ -131,7 +131,7 @@ export class SearchTeacherComponent implements OnInit {
   }
 
   loadAllTeacher(page: number, size: number) {
-    this.docenteService.getAllPage(0, 10).subscribe({
+    this.docenteService.getAllPage(0, size).subscribe({
       next: (response) => {
         this.teacherList = response.data;
         this.teacherFilterList = [...this.teacherList];

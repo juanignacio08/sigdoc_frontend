@@ -1,0 +1,12 @@
+[
+    {"numero": 1, "nombre": "Universidad Nacional Mayor de San Marcos", "sigla": "UNMSM"},
+    {"numero": 2, "nombre": "Universidad Nacional de San Cristóbal de Huamanga", "sigla": "UNSCH"},
+    {"numero": 3, "nombre": "Universidad Nacional de San Antonio Abad del Cusco", "sigla": "UNSAAC"},
+    {"numero": 4, "nombre": "Universidad Nacional de Trujillo", "sigla": "UNT"},
+    {"numero": 5, "nombre": "Universidad Nacional de San Agustín de Arequipa", "sigla": "UNSA"},
+    {"numero": 6, "nombre": "Universidad Nacional de Ingeniería", "sigla": "UNI"},
+    {"numero": 7, "nombre": "Universidad Nacional Agraria La Molina", "sigla": "UNALM"},
+    {"numero": 8, "nombre": "Pontificia Universidad Católica del Perú", "sigla": "PUCP"},
+    {"numero": 9, "nombre": "Universidad Nacional San Luis Gonzaga", "sigla": "UNICA"},
+    {"numero": 10, "nombre": "Universidad Nacional del Centro del Perú", "sigla": "UNCP"}
+]
