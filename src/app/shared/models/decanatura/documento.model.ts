@@ -1,5 +1,4 @@
 import { ResponseDTO } from "../base/responsedto.model";
-import { TablaMaestra } from "../maestros/tablamaestra.model";
 import { Docente } from "./docente.model";
 
 export interface Documento {

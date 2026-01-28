@@ -1,4 +1,71 @@
-<p>register-work-info works!</p>
+@if (loadingOperation) {
+<div class="text-center p-5 m-5">
+    <div class="spinner-grow text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-secondary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-danger" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-warning" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-dark" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+} @else {
+<div class="row align-items-center mb-0">
+    <div class="col-8">
+        <p class="fw-bold fs-6 m-0"></p>
+    </div>
+    <div class="col-4 text-end">
+        <button class="btn btn-icon icon-left btn-primary m-0"
+            (click)="openModalWork('add', 'Registrar Información Profesional', null)"
+            [disabled]="!canNew"><i class="fas fa-plus"></i> Agregar</button>
+    </div>
+</div>
+<hr class="mt-2">
+
+<div class="demo m-3 my-4">
+    <div class="container">
+        <div class="row g-3 align-items-stretch">
+            @if (workTeacherList.length > 0) {
+            @for (item of workTeacherList; track item.docenteLaboralId) {
+            <div class="col-4 mb-3">
+                <app-docente-laboral-card [data]="item"
+                    (editar)="openModalWork('edit', 'Editar Información Profesional', $event)"
+                    (toggleEstado)="toggleStatus($event)" (delete)="delete($event.docenteLaboralId)">
+                </app-docente-laboral-card>
+            </div>
+            }
+            } @else {
+            <div class="col-12">
+                <div class="empty-state">
+                    <div class="empty-icon">📂</div>
+                    <h5>No hay información registrada</h5>
+                    <p>
+                        Aún no se ha registrado información laboral para este docente.
+                    </p>
+                    <button class="btn btn-primary btn-sm" (click)="openModalWork('add', 'Registrar Información Profesional', null)">Agregar registro</button>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
 <div class="row mt-2">
     <div class="col-12 col-md-4 text-start">
         <button type="button" class="btn btn-info btn-icon icon-left" placement="top"
@@ -16,3 +83,4 @@
             Siguiente</button>
     </div>
 </div>
+}

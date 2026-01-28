@@ -1,0 +1,43 @@
+import { PaginatedResponseDTO } from "../base/paginateddto.model";
+import { ResponseDTO } from "../base/responsedto.model";
+import { DepartamentoAcademico } from "../maestros/departamentoacademico.model";
+import { TablaMaestra } from "../maestros/tablamaestra.model";
+import { Docente } from "./docente.model";
+import { Documento } from "./documento.model";
+
+export interface DocenteLaboral {
+    docenteLaboralId: number,
+    docente: Docente,
+    departamentoAcademico: DepartamentoAcademico,
+    codigoInstitucional: string,
+    emailInstitucional: string,
+    codRegimenLaboral: TablaMaestra,
+    codCategoriaDocenteNombrado: TablaMaestra,
+    codNivelDocenteContratado: TablaMaestra,
+    codTiempoDedicacion: TablaMaestra,
+    fechaInicio: string,
+    fechaFin: string,
+    documento: Documento,
+    estado: number
+}
+
+export interface DocenteLaboralRequest {
+    docenteLaboralId: number,
+    docenteId: number,
+    departamentoId: number,
+    codigoInstitucional?: string,
+    emailInstitucional?: string,
+    codRegimenLaboral: string,
+    codCategoriaDocenteNombrado?: string,
+    codNivelDocenteContratado?: string,
+    codTiempoDedicacion?: string,
+    fechaInicio?: string,
+    fechaFin?: string,
+    documento?: Documento,
+    estado: number
+}
+
+export type DocenteLaboralResponse = ResponseDTO<DocenteLaboral>;
+export type DocenteLaboralListResponse = ResponseDTO<DocenteLaboral[]>;
+export type DocenteLaboralResponseListPaginated = PaginatedResponseDTO<DocenteLaboral[]>;
+

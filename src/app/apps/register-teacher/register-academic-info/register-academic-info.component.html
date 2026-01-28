@@ -31,13 +31,15 @@
         <p class="fw-bold fs-6 m-0">Lista de Grados Académicos</p>
     </div>
     <div class="col-4 text-end">
-        <button class="btn btn-icon icon-left btn-primary m-0" (click)="openModalInformative('add','Registrar Grado Académico' , null)"><i
-                class="fas fa-plus"></i> Agregar</button>
+        <button class="btn btn-icon icon-left btn-primary m-0"
+            (click)="openModalInformative('add','Registrar Grado Académico' , null)"><i class="fas fa-plus"></i>
+            Agregar</button>
     </div>
 </div>
 <hr class="mt-2">
 <div class="row">
     <div class="col-12">
+        @if (academicGradeList.length > 0) {
         <ngx-datatable #table class="material" [rows]="academicGradeList" [loadingIndicator]="loadingIndicator"
             columnMode="force" [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="10"
             [scrollbarH]="scrollBarHorizontal" [reorderable]="reorderable">
@@ -70,28 +72,51 @@
                 <ng-template let-value="value" let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
                     <div class="buttons">
                         <button class="btn btn-icon btn-info btn-sm" placement="top" ngbTooltip="Ver Información"
-                            aria-label="ver" (click)="openModalInformative('view', 'Grado Académico', row)"><i class="fas fa-bullseye"></i></button>
+                            aria-label="ver" (click)="openModalInformative('view', 'Grado Académico', row)"><i
+                                class="fas fa-bullseye"></i></button>
                         <button class="btn btn-icon btn-secondary btn-sm" placement="top"
-                            ngbTooltip="Editar Información" aria-label="editar" (click)="openModalInformative('edit', 'Editar Información', row)"><i class="far fa-edit"></i></button>
+                            ngbTooltip="Editar Información" aria-label="editar"
+                            (click)="openModalInformative('edit', 'Editar Información', row)"><i
+                                class="far fa-edit"></i></button>
                         <button class="btn btn-icon btn-danger btn-sm" placement="top" ngbTooltip="Eliminar Información"
-                            aria-label="eliminar" (click)="openModalInformative('delete', 'Eliminar Información', row)"><i class="fas fa-trash-alt"></i></button>
+                            aria-label="eliminar"
+                            (click)="openModalInformative('delete', 'Eliminar Información', row)"><i
+                                class="fas fa-trash-alt"></i></button>
                     </div>
                 </ng-template>
             </ngx-datatable-column>
         </ngx-datatable>
+        }@else {
+        <div class="col-12">
+            <div class="empty-state">
+                <div class="empty-icon">📂</div>
+                <h5>No hay información registrada</h5>
+                <p>
+                    Aún no se ha registrado información académica para este docente.
+                </p>
+                <button class="btn btn-primary btn-sm"
+                    (click)="openModalInformative('add','Registrar Grado Académico' , null)">Agregar registro</button>
+            </div>
+        </div>
+        }
+
+
+
 
         <div class="row mt-2">
             <div class="col-12 col-md-4 text-start">
                 <button type="button" class="btn btn-info btn-icon icon-left" placement="top"
-                    ngbTooltip="Volver al anterior formulario"  [disabled]="!teacherActive" (click)="goToBackStep()"><i class="fas fa-arrow-alt-circle-left"></i>
+                    ngbTooltip="Volver al anterior formulario" [disabled]="!teacherActive" (click)="goToBackStep()"><i
+                        class="fas fa-arrow-alt-circle-left"></i>
                     Atras</button>
             </div>
             <div class="col-12 col-md-4 text-center">
-                
+
             </div>
             <div class="col-12 col-md-4 text-end">
                 <button type="button" class="btn btn-info btn-icon icon-left" placement="top"
-                    ngbTooltip="Avanzar al siguiente formulario"  [disabled]="!teacherActive" (click)="goToNextStep()"><i class="fas fa-arrow-alt-circle-right"></i>
+                    ngbTooltip="Avanzar al siguiente formulario" [disabled]="!teacherActive" (click)="goToNextStep()"><i
+                        class="fas fa-arrow-alt-circle-right"></i>
                     Siguiente</button>
             </div>
         </div>

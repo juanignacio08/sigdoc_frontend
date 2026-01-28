@@ -1,0 +1,45 @@
+.text-enfermeria {
+    color: turquoise;
+    font-weight: bold;
+}
+
+.border-enfermeria {
+    border: 2px solid turquoise;
+    border-radius: 8px;
+}
+
+.text-farmacia {
+    color: navy;
+    font-weight: bold;
+}
+
+.border-farmacia {
+    border: 2px solid navy;
+    border-radius: 8px;
+}
+
+.text-medicina {
+    color: purple;
+    font-weight: bold;
+}
+
+.border-medicina {
+    border: 2px solid purple;
+    border-radius: 8px;
+}
+
+.text-obstetricia {
+    color: #800040;
+    font-weight: bold;
+}
+
+.border-obstetricia {
+    border: 2px solid #800040;
+    border-radius: 8px;
+}
+
+.doc-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}

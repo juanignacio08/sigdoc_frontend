@@ -1,0 +1,121 @@
+<div class="card text-center doc-card" [class.doc-inactivo]="esInactivo" [ngClass]="esInactivo ? 'bg-light' : ''">
+    <div class="bg-light p-3 rounded-top-3">
+        <div class="row text-center align-items-center">
+            <div class="col-12 p-2">
+            @if (data?.estado === 1) {
+                <i class="fas fa-briefcase fs-3"></i>
+            } @else {
+                <i class="fas fa-ban fs-3"></i>    
+            }
+            </div>
+            <div class="col-12 col-md-8 text-start">
+                <p class="fs-6 mb-0 fw-bold">Departamento Académico</p>
+                <span class="">
+                    {{ data?.departamentoAcademico?.denominacion ?? '- - -' }}
+                </span>
+                <br>
+                <small>
+                    ({{ data?.departamentoAcademico?.abreviatura ?? '- - -' }})
+                </small>
+            </div>
+            <div class="col-12 col-md-4 text-end">
+                <span class="badge fs-6" [ngClass]="esInactivo ? 'badge-danger' : 'badge-secondary'">{{ esInactivo ?
+                    'INACTIVO' : 'ACTIVO' }}</span>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body pb-0" [ngClass]="esInactivo ? 'bg-light' : ''">
+        <small class="card-text fs-5 fw-bold p-2" [ngClass]="{
+            'text-enfermeria border-enfermeria' : data?.departamentoAcademico?.denominacion === 'Departamento Académico de Enfermería',
+            'text-farmacia border-farmacia' : data?.departamentoAcademico?.denominacion === 'Departamento Académico de Farmacia y Bioquímica',
+            'text-medicina border-medicina' : data?.departamentoAcademico?.denominacion === 'Departamento Académico de Medicina Humana',
+            'text-obstetricia border-obstetricia' : data?.departamentoAcademico?.denominacion === 'Departamento Académico de Obstetricia'
+        }">{{ data?.codigoInstitucional ?? '- - -' }}</small>
+
+        <div class="row g-3 mt-2">
+            <div class="col-12">
+                <div class="fw-bold">Email institucional</div>
+                <div class="">
+                    {{ data?.emailInstitucional ?? '- - -' }}
+                </div>
+            </div>
+
+            @if (data?.codRegimenLaboral) {
+            <div class="col-md-6">
+                <div class="fw-bold">Régimen</div>
+                <div class="mt-0">
+                    {{ data?.codRegimenLaboral?.denominacion ?? '- - -' }}
+                </div>
+            </div>
+            }
+
+            @if (data?.codCategoriaDocenteNombrado) {
+            <div class="col-md-6">
+                <div class="fw-bold">Categoría</div>
+                <div class="mt-0">
+                    {{ data?.codCategoriaDocenteNombrado?.denominacion ?? '- - -' }}
+                </div>
+            </div>
+            }
+
+            @if (data?.codNivelDocenteContratado) {
+            <div class="col-md-6">
+                <div class="fw-bold">Nivel contratado</div>
+                <div class="mt-0">
+                    {{ data?.codNivelDocenteContratado?.denominacion ?? '- - -' }}
+                </div>
+            </div>
+            }
+
+            @if (data?.codTiempoDedicacion) {
+            <div class="col-md-6">
+                <div class="fw-bold">Dedicación</div>
+                <div class="mt-0">
+                    {{ data?.codTiempoDedicacion?.denominacion ?? '- - -' }}
+                </div>
+            </div>
+            }
+
+            <div class="col-md-12">
+                <div class="fw-bold">Periodo</div>
+                <div class="mt-0">
+                    {{ data?.fechaInicio ?? '- - -' }} <i class="fas fa-arrow-right mx-2"></i> {{ data?.fechaFin ??
+                    '- - -' }}
+                </div>
+            </div>
+
+            @if (data?.documento) {
+            <div class="col-12">
+                <div class="fw-bold">Documento</div>
+                <i class="fas fa-file-pdf text-danger"></i>
+                <a [href]="data?.documento?.url" target="_blank" class="doc-link">
+                    {{ data?.documento?.denominacion ?? 'Documento' }}
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center gap-2 mb-3" [ngClass]="esInactivo ? 'bg-light' : ''">
+        @if (data?.estado === 1) {
+        <button class="btn btn-primary px-4" (click)="onEditar()">
+            Editar
+        </button>
+        }
+        <button class="btn" [ngClass]="esInactivo ? 'btn-info' : 'btn-secondary'"
+            (click)="onToggleEstado()" placement="top" [ngbTooltip]="data?.estado === 1 ? 'Dar de baja la Información' : 'Dar de alta la Información'">
+            @if (data?.estado === 1) {
+            <i class="fas fa-arrow-circle-down"></i>
+            } @else {
+            <i class="fas fa-arrow-circle-up"></i>
+            }
+        </button>
+        <button class="btn btn-danger" placement="top" ngbTooltip="Eliminar Información"
+            (click)="onDelete()" aria-label="delete">
+            <i class="fas fa-trash-alt"></i>
+        </button>
+    </div>
+
+</div>

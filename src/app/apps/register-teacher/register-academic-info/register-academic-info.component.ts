@@ -1,10 +1,4 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
@@ -21,15 +15,12 @@ import { ModalAcademicComponent } from './modal-academic/modal-academic.componen
 
 @Component({
   selector: 'app-register-academic-info',
-  imports: [NgxDatatableModule, ReactiveFormsModule, NgbTooltip],
+  imports: [NgxDatatableModule, NgbTooltip],
   templateUrl: './register-academic-info.component.html',
   styleUrl: './register-academic-info.component.scss',
 })
 export class RegisterAcademicInfoComponent implements OnInit {
   teacherActive?: Docente | null;
-
-  academicInfoForm!: FormGroup;
-
   academicGradeList: DocenteAcademico[] = [];
 
   pageNumber = 0;
@@ -49,7 +40,6 @@ export class RegisterAcademicInfoComponent implements OnInit {
   teacherAcademicService = inject(DocenteacademicoService);
 
   constructor(
-    private fb: FormBuilder,
     private toastr: ToastrService,
     private router: Router,
     private route: ActivatedRoute,

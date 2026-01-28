@@ -20,6 +20,9 @@ export class TablaMaestraService {
   NIVEL_DOCENTE = '010';
   TIEMPO_DEDICACION = '011';
 
+  DOCENTE_NOMBRADO = '008001';
+  DOCENTE_CONTRATADO = '008002';
+
   http = inject(HttpClient);
 
   private readonly baseUrl = environment.apiUrl + "/master-table";
