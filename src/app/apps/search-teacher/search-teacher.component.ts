@@ -32,11 +32,16 @@ import { DocenteService } from 'app/services/decanatura/docente.service';
 export class SearchTeacherComponent implements OnInit {
   teacherList: Docente[] = [];
   teacherFilterList: Docente[] = [];
+  teacherAllList: Docente[] = [];
 
   pageNumber = 0;
   pageSize = 1;
   totalItems = 0;
   pageSizeOptions = [10, 20, 50, 100];
+
+  pageNumberV1 = 0;
+  pageSizeV1 = 10;
+  totalItemsV1 = 0;
 
   loadingIndicator = true;
   reorderable = false;
@@ -57,6 +62,7 @@ export class SearchTeacherComponent implements OnInit {
 
   ngOnInit() {
     this.loadTeachers(0, 10, this.docenteFilter);
+    this.loadAllTeachers();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -68,7 +74,7 @@ export class SearchTeacherComponent implements OnInit {
 
   advancedSearch() {
     const modalRef = this.modalService.open(AdvancedSearchComponent, {
-      size: 'lg',
+      size: 'xl',
       centered: true,
       backdrop: 'static',
       scrollable: true,
@@ -103,6 +109,24 @@ export class SearchTeacherComponent implements OnInit {
       });
   }
 
+  loadAllTeachers() {
+    this.loadingIndicator = true;
+    this.docenteService.getAllPage(0, 10000).subscribe({
+      next: (response) => {
+        this.teacherAllList = response.data;
+        this.loadingIndicator = false;
+      },
+      error: (err) => {
+        this.loadingIndicator = false;
+        if (err.error.detail) {
+          this.showError(err.error.detail);
+        } else {
+          this.showError('Error desconocido. Intentelo de nuevo...');
+        }
+      },
+    });
+  }
+
   loadTeachers(page: number, size: number, docenteFilter : DocenteFilter | null) {
     this.loadingIndicator = true;
     if (docenteFilter === null) this.loadAllTeacher(page, size);
@@ -118,6 +142,10 @@ export class SearchTeacherComponent implements OnInit {
         this.pageSize = size;
         this.totalItems = response.totalItems;
         this.loadingIndicator = false;
+
+        this.pageNumberV1 = this.pageNumber;
+        this.pageSizeV1 = this.pageSize;
+        this.totalItemsV1 = this.totalItems;
       },
       error: (err) => {
         this.loadingIndicator = false;
@@ -131,7 +159,7 @@ export class SearchTeacherComponent implements OnInit {
   }
 
   loadAllTeacher(page: number, size: number) {
-    this.docenteService.getAllPage(0, size).subscribe({
+    this.docenteService.getAllPage(page, size).subscribe({
       next: (response) => {
         this.teacherList = response.data;
         this.teacherFilterList = [...this.teacherList];
@@ -139,6 +167,10 @@ export class SearchTeacherComponent implements OnInit {
         this.pageSize = size;
         this.totalItems = response.totalItems;
         this.loadingIndicator = false;
+
+        this.pageNumberV1 = this.pageNumber;
+        this.pageSizeV1 = this.pageSize;
+        this.totalItemsV1 = this.totalItems;
       },
       error: (err) => {
         this.loadingIndicator = false;
@@ -153,9 +185,18 @@ export class SearchTeacherComponent implements OnInit {
 
   filterDatatable(event: any) {
     const val = event.target.value.toLowerCase().trim();
+    
+    if (!val) {
+      this.teacherFilterList = [];
+      this.teacherFilterList = [...this.teacherList];
+      this.pageNumber = this.pageNumberV1;
+      this.pageSize = this.pageSizeV1;
+      this.totalItems = this.totalItemsV1;
+      return;
+    }
 
     // filtrar
-    const filtered = this.teacherList.filter((d: Docente) => {
+    const filtered = this.teacherAllList.filter((d: Docente) => {
       return (
         d.nombre?.toLowerCase().includes(val) ||
         d.apellidoPaterno?.toLowerCase().includes(val) ||

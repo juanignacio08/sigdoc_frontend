@@ -6,28 +6,28 @@
 </div>
 <div class="modal-body">
     <form [formGroup]="teacherFilterForm">
-        <div class="row align-items-top border">
+        <div class="row align-items-top border mb-3">
             <p class="fs-6 fw-bold pt-3">Informacion Básica</p>
             <!-- DOCUMENT TYPE -->
             <div class="col-12 col-md-4">
                 <div class="form-group position-relative">
-                    @if (loadingDocumentType) {
+                    @if (controls.codeDocumentType.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
                     <label for="documentType">Tipo de Documento
-                        @if (errorDocumentType) {
+                        @if (controls.codeDocumentType.error) {
                         <a style="cursor: pointer;" class="text-danger" (click)="retryDocumentTypes()">(Ocurrio un
                             error...)</a>
                         }
                     </label>
                     <i class="fas fa-address-book input-icons"></i>
                     <select id="documentType" class="form-select form-control psl-5" formControlName="documentType">
-                        @if (loadingDocumentType) {
-                        <option disabled selected>Cargando tipos de documento...</option>
+                        @if (controls.codeDocumentType.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando tipos de documento...</option>
                         } @else {
-                        <option [value]="null">Seleccione...</option>
+                        <option [ngValue]="null">Seleccione...</option>
                         @for (item of documentTypeList; track $index) {
-                        <option [value]="item.codigo">{{item.denominacion}}</option>
+                        <option [ngValue]="item.codigo">{{item.denominacion}}</option>
                         }
                         }
 
@@ -47,23 +47,23 @@
             <!-- TEACHER STATUS -->
             <div class="col-12 col-md-4">
                 <div class="form-group position-relative">
-                    @if (loadingDocumentType) {
+                    @if (controls.codeDocumentType.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
                     <label for="teacherStatus">Estado
-                        @if (errorDocumentType) {
+                        @if (controls.codeDocumentType.error) {
                         <a style="cursor: pointer;" class="text-danger" (click)="retryDocumentTypes()">(Ocurrio un
                             error...)</a>
                         }
                     </label>
                     <i class="fas fa-address-book input-icons"></i>
                     <select id="teacherStatus" class="form-select form-control psl-5" formControlName="teacherStatus">
-                        @if (loadingDocumentType) {
-                        <option disabled selected>Cargando tipos de documento...</option>
+                        @if (controls.codeDocumentType.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando tipos de documento...</option>
                         } @else {
-                        <option [value]="null">Seleccione...</option>
+                        <option [ngValue]="null">Seleccione...</option>
                         @for (item of documentTypeList; track $index) {
-                        <option [value]="item.codigo">{{item.denominacion}}</option>
+                        <option [ngValue]="item.codigo">{{item.denominacion}}</option>
                         }
                         }
                     </select>
@@ -120,23 +120,23 @@
             <!-- GENDER -->
             <div class="col-12 col-md-6">
                 <div class="form-group position-relative">
-                    @if (loadingGender) {
+                    @if (controls.codeGender.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
                     <label for="gender">Genero
-                        @if (errorGender) {
+                        @if (controls.codeGender.error) {
                         <a style="cursor: pointer;" class="text-danger" (click)="retryGender()">(Ocurrio un
                             error...)</a>
                         }
                     </label>
                     <i class="fas fa-angle-double-down input-icons"></i>
                     <select id="gender" class="form-select form-control psl-5" formControlName="gender">
-                        @if (loadingGender) {
-                        <option disabled>Cargando las opciones...</option>
+                        @if (controls.codeGender.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando las opciones...</option>
                         } @else {
-                        <option [value]='null'>Seleccione</option>
+                        <option [ngValue]='null'>Seleccione</option>
                         @for (item of genderList; track $index) {
-                        <option [value]="item.codigo">{{item.denominacion}}</option>
+                        <option [ngValue]="item.codigo">{{item.denominacion}}</option>
                         }
                         }
                     </select>
@@ -145,23 +145,23 @@
             <!-- MARITAL STATUS -->
             <div class="col-12 col-md-6">
                 <div class="form-group position-relative">
-                    @if (loadingMaritalStatus) {
+                    @if (controls.codeMaritalStatus.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
                     <label for="maritalStatus">Estado Civil
-                        @if (errorMaritalStatus) {
+                        @if (controls.codeMaritalStatus.error) {
                         <a style="cursor: pointer;" class="text-danger" (click)="retryMaritalStatus()">(Ocurrio un
                             error...)</a>
                         }
                     </label>
                     <i class="fas fa-angle-double-down input-icons"></i>
                     <select id="maritalStatus" class="form-select form-control psl-5" formControlName="maritalStatus">
-                        @if (loadingMaritalStatus) {
-                        <option disabled selected>Cargando las opciones...</option>
+                        @if (controls.codeMaritalStatus.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando las opciones...</option>
                         } @else {
-                        <option [value]="null" selected disabled>Seleccione</option>
+                        <option [ngValue]="null" selected disabled>Seleccione</option>
                         @for (item of maritalStatusList; track $index) {
-                        <option [value]="item.codigo">{{item.denominacion}}</option>
+                        <option [ngValue]="item.codigo">{{item.denominacion}}</option>
                         }
                         }
                     </select>
@@ -172,20 +172,20 @@
             <span class="text-label pb-2">Dirección Actual</span>
             <div class="col-12 col-md-4">
                 <div class="form-group">
-                    @if (loadingDepartments) {
+                    @if (controls.codeDepartments.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
-                    @if (errorDepartments) {
+                    @if (controls.codeDepartments.error) {
                     <a style="cursor: pointer;" class="text-danger" (click)="retryDepartments()">(Ocurrio un
                         error...)</a>
                     }
                     <select class="form-select form-control" id="regionActual" formControlName="regionActual">
-                        @if (loadingDepartments) {
-                        <option disabled selected>Cargando las regiones...</option>
+                        @if (controls.codeDepartments.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando las regiones...</option>
                         } @else {
-                        <option [value]="null" selected disabled>Región</option>
+                        <option [ngValue]="null" selected disabled>Región</option>
                         @for (item of departmentsList; track $index) {
-                        <option [value]="item.codigoRegion">{{item.denominacionRegion}}</option>
+                        <option [ngValue]="item.codigoRegion">{{item.denominacionRegion}}</option>
                         }
                         }
                     </select>
@@ -193,20 +193,20 @@
             </div>
             <div class="col-12 col-md-4">
                 <div class="form-group">
-                    @if (loadingProvincesNow) {
+                    @if (controls.codeProvincesNow.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
-                    @if (errorProvincesNow) {
+                    @if (controls.codeProvincesNow.error) {
                     <a style="cursor: pointer;" class="text-danger" (click)="retryProvincesNow()">(Ocurrio un
                         error...)</a>
                     }
                     <select class="form-select form-control" id="provinciaActual" formControlName="provinciaActual">
-                        @if (loadingProvincesNow) {
-                        <option disabled selected>Cargando las provincias...</option>
+                        @if (controls.codeProvincesNow.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando las provincias...</option>
                         } @else {
-                        <option [value]="null" selected disabled>Provincia</option>
+                        <option [ngValue]="null" selected disabled>Provincia</option>
                         @for (item of provincesListNow; track $index) {
-                        <option [value]="item.codigoProvincia">{{item.denominacionProvincia}}</option>
+                        <option [ngValue]="item.codigoProvincia">{{item.denominacionProvincia}}</option>
                         }
                         }
                     </select>
@@ -214,20 +214,20 @@
             </div>
             <div class="col-12 col-md-4">
                 <div class="form-group">
-                    @if (loadingDistrictsNow) {
+                    @if (controls.codeDistrictsNow.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
-                    @if (errorDistrictsNow) {
+                    @if (controls.codeDistrictsNow.error) {
                     <a style="cursor: pointer;" class="text-danger" (click)="retryDistrictsNow()">(Ocurrio un
                         error...)</a>
                     }
                     <select class="form-select form-control" id="distritoActual" formControlName="distritoActual">
-                        @if (loadingDistrictsNow) {
-                        <option disabled selected>Cargando los distritos...</option>
+                        @if (controls.codeDistrictsNow.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando los distritos...</option>
                         } @else {
-                        <option [value]="null" selected disabled>Distrito</option>
+                        <option [ngValue]="null" selected disabled>Distrito</option>
                         @for (item of districtsListNow; track $index) {
-                        <option [value]="item.codigoUbigeo">{{item.denominacionDistrito}}</option>
+                        <option [ngValue]="item.codigoUbigeo">{{item.denominacionDistrito}}</option>
                         }
                         }
                     </select>
@@ -238,20 +238,20 @@
             <span class="text-label pb-2">Dirección de Procedencia</span>
             <div class="col-12 col-md-4">
                 <div class="form-group">
-                    @if (loadingDepartments) {
+                    @if (controls.codeDepartments.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
-                    @if (errorDepartments) {
+                    @if (controls.codeDepartments.error) {
                     <a style="cursor: pointer;" class="text-danger" (click)="retryDepartments()">(Ocurrio un
                         error...)</a>
                     }
                     <select class="form-select form-control" id="regionProcedencia" formControlName="regionProcedencia">
-                        @if (loadingDepartments) {
-                        <option disabled selected>Cargando las regiones...</option>
+                        @if (controls.codeDepartments.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando las regiones...</option>
                         } @else {
-                        <option [value]="null" selected disabled>Región</option>
+                        <option [ngValue]="null" selected disabled>Región</option>
                         @for (item of departmentsList; track $index) {
-                        <option [value]="item.codigoRegion">{{item.denominacionRegion}}</option>
+                        <option [ngValue]="item.codigoRegion">{{item.denominacionRegion}}</option>
                         }
                         }
                     </select>
@@ -259,21 +259,21 @@
             </div>
             <div class="col-12 col-md-4">
                 <div class="form-group">
-                    @if (loadingProvincesProcedencia) {
+                    @if (controls.codeProvincesProcedencia.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
-                    @if (errorProvincesProcedencia) {
+                    @if (controls.codeProvincesProcedencia.error) {
                     <a style="cursor: pointer;" class="text-danger" (click)="retryProvincesProcedencia()">(Ocurrio un
                         error...)</a>
                     }
                     <select class="form-select form-control" id="provinciaProcedencia"
                         formControlName="provinciaProcedencia">
-                        @if (loadingProvincesProcedencia) {
-                        <option disabled selected>Cargando las provincias...</option>
+                        @if (controls.codeProvincesProcedencia.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando las provincias...</option>
                         } @else {
-                        <option [value]="null" selected disabled>Provincia</option>
+                        <option [ngValue]="null" selected disabled>Provincia</option>
                         @for (item of provincesListProcedencia; track $index) {
-                        <option [value]="item.codigoProvincia">{{item.denominacionProvincia}}</option>
+                        <option [ngValue]="item.codigoProvincia">{{item.denominacionProvincia}}</option>
                         }
                         }
                     </select>
@@ -281,21 +281,21 @@
             </div>
             <div class="col-12 col-md-4">
                 <div class="form-group">
-                    @if (loadingDistrictsProcedencia) {
+                    @if (controls.codeDistrictsProcedencia.loading) {
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     }
-                    @if (errorDistrictsProcedencia) {
+                    @if (controls.codeDistrictsProcedencia.error) {
                     <a style="cursor: pointer;" class="text-danger" (click)="retryDistrictsProcedencia()">(Ocurrio un
                         error...)</a>
                     }
                     <select class="form-select form-control" id="distritoProcedencia"
                         formControlName="distritoProcedencia">
-                        @if (loadingDistrictsProcedencia) {
-                        <option disabled selected>Cargando los distritos...</option>
+                        @if (controls.codeDistrictsProcedencia.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando los distritos...</option>
                         } @else {
-                        <option [value]="null" disabled>Distrito</option>
+                        <option [ngValue]="null" disabled>Distrito</option>
                         @for (item of districtsListProcedencia; track $index) {
-                        <option [value]="item.codigoUbigeo">{{item.denominacionDistrito}}</option>
+                        <option [ngValue]="item.codigoUbigeo">{{item.denominacionDistrito}}</option>
                         }
                         }
                     </select>
@@ -316,6 +316,260 @@
                 </div>
             </div>
         </div>
+
+        <div class="row align-items-top border mb-3">
+            <p class="fs-6 fw-bold pt-3">Informacion Académica</p>
+            <!-- ACADEMIC GRADE TYPE -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    @if (controls.codeAcademicGrade.loading) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="academicGrade">Grado Académico
+                        @if (controls.codeAcademicGrade.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryAcademicGrade()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-graduation-cap input-icons"></i>
+                    <select id="academicGrade" class="form-select form-control psl-5" formControlName="academicGrade">
+                        @if (controls.codeAcademicGrade.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando grados académicos...</option>
+                        } @else {
+                        <option [ngValue]="null">Seleccione...</option>
+                        @for (item of academicGradeList; track $index) {
+                        <option [ngValue]="item.codigo">{{item.denominacion}}</option>
+                        }
+                        }
+
+                    </select>
+                </div>
+            </div>
+
+            <!-- PROFESSIONAL TITLE -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    <label for="professionalTitle">Título Profesional</label>
+                    <i class="fas fa-user-graduate input-icons"></i>
+                    <input type="text" class="form-control psl-5" placeholder="Ingrese el título profesional" id="professionalTitle"
+                        formControlName="professionalTitle" (input)="onInputProfession()"
+                        (blur)="cerrarListaProfession()" (focus)="mostrarListaCarrera = true">
+
+                    @if (mostrarListaCarrera && resultadoCarrera.length > 0) {
+                    <ul class="list-group">
+                        @for (carrera of resultadoCarrera; track $index) {
+                        <li class="list-group-item list-group-item-action py-1" style="cursor: pointer;"
+                            (click)="seleccionarProfession(carrera)">
+                            {{ carrera.nombre }}
+                        </li>
+                        }
+                    </ul>
+                    }
+                </div>
+            </div>
+
+            <!-- ACADEMIC INSTITUTE -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    <label for="academicInstitute">Institución Académica</label>
+                    <i class="fas fa-university input-icons"></i>
+                    <input type="text" class="form-control psl-5" placeholder="Ingrese la institución académica" id="academicInstitute"
+                        formControlName="academicInstitute" (input)="onInputUniversity()"
+                        (blur)="cerrarListaUniversity()" (focus)="mostrarListaUniversidad = true">
+
+                    @if (mostrarListaUniversidad && resultadoUniversidad.length > 0) {
+                    <ul class="list-group">
+                        @for (universidad of resultadoUniversidad; track $index) {
+                        <li class="list-group-item list-group-item-action py-1" style="cursor: pointer;"
+                            (click)="seleccionarUniversity(universidad)">
+                            {{ universidad.nombre }}
+                        </li>
+                        }
+                    </ul>
+                    }
+                </div>
+            </div>
+
+            <!-- SPECIALTY -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    <label for="academicSpecialty">Especialidad Académica</label>
+                    <i class="fas fa-book-reader input-icons"></i>
+                    <input type="text" class="form-control psl-5" placeholder="Ingrese la especialidad académica" id="academicSpecialty" formControlName="academicSpecialty">
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="row align-items-top border mb-3">
+            <p class="fs-6 fw-bold pt-3">Informacion Institucional</p>
+            <!-- FACULTY -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    @if (controls.codeFaculty.loading) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="facultyId">Facultad
+                        @if (controls.codeFaculty.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryFaculty()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-university input-icons"></i>
+                    <select id="facultyId" class="form-select form-control psl-5" formControlName="facultyId">
+                        @if (controls.codeFaculty.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando facultades...</option>
+                        } @else {
+                        <option [ngValue]="null">Seleccione...</option>
+                        @for (item of facultyList; track $index) {
+                        <option [ngValue]="item.facultadId">{{item.denominacion}}</option>
+                        }
+                        }
+
+                    </select>
+                </div>
+            </div>
+
+            <!-- DEPARTMENT ACADEMIC -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    @if (controls.codeAcademicDepartment.loading) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="departmentAcademicId">Departamento Académico
+                        @if (controls.codeAcademicDepartment.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryAcademicDepartment()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-building input-icons"></i>
+                    <select id="departmentAcademicId" class="form-select form-control psl-5" formControlName="departmentAcademicId">
+                        @if (controls.codeAcademicDepartment.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando departamentos académicos...</option>
+                        } @else {
+                        <option [ngValue]="null">Seleccione...</option>
+                        @for (item of academicDepartmentList; track $index) {
+                        <option [ngValue]="item.departamentoAcademicoId">{{item.denominacion}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- INSTITUTIONAL CODE -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    <label for="institutionalCode">Código Institucional</label>
+                    <i class="fas fa-keyboard input-icons"></i>
+                    <input type="text" class="form-control psl-5" placeholder="Ingrese el código institucional" id="institutionalCode" formControlName="institutionalCode">
+                </div>
+            </div>
+
+            <!-- WORK REGIME -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    @if (controls.codeWorkRegime.loading) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="workRegimeCode">Régimen Laboral
+                        @if (controls.codeWorkRegime.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryWorkRegime()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="material-icons input-icons">work</i>
+                    <select id="workRegimeCode" class="form-select form-control psl-5" formControlName="workRegimeCode">
+                        @if (controls.codeWorkRegime.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando régimen laboral...</option>
+                        } @else {
+                        <option [ngValue]="null">Seleccione...</option>
+                        @for (item of workRegimeList; track $index) {
+                        <option [ngValue]="item.codigo">{{item.denominacion}}</option>
+                        }
+                        }
+
+                    </select>
+                </div>
+            </div>
+
+            <!-- CATEGORY -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    @if (controls.codeTeacherCategory.loading) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="categoryCode">Categoría Docente
+                        @if (controls.codeTeacherCategory.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryTeacherCategory()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-genderless input-icons"></i>
+                    <select id="categoryCode" class="form-select form-control psl-5" formControlName="categoryCode">
+                        @if (controls.codeTeacherCategory.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando opciones...</option>
+                        } @else {
+                        <option [ngValue]="null">Seleccione...</option>
+                        @for (item of teacherCategoryList; track $index) {
+                        <option [ngValue]="item.codigo">{{item.denominacion}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+            
+            <!-- LEVEL -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    @if (controls.codeTeacherLevel.loading) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="levelCode">Nivel Docente
+                        @if (controls.codeTeacherLevel.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryTeacherLevel()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-genderless input-icons"></i>
+                    <select id="levelCode" class="form-select form-control psl-5" formControlName="levelCode">
+                        @if (controls.codeTeacherLevel.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando opciones...</option>
+                        } @else {
+                        <option [ngValue]="null">Seleccione...</option>
+                        @for (item of teacherLevelList; track $index) {
+                        <option [ngValue]="item.codigo">{{item.denominacion}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- DEDICATION TIME -->
+            <div class="col-12 col-md-4">
+                <div class="form-group position-relative">
+                    @if (controls.codeDedicationTime.loading) {
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    }
+                    <label for="dedicationTime">Tiempo de Dedicatoria
+                        @if (controls.codeDedicationTime.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryDedicationTime()">(Ocurrio un
+                            error...)</a>
+                        }
+                    </label>
+                    <i class="fas fa-genderless input-icons"></i>
+                    <select id="dedicationTime" class="form-select form-control psl-5" formControlName="dedicationTime">
+                        @if (controls.codeDedicationTime.loading) {
+                        <option [ngValue]="null" disabled selected>Cargando opciones...</option>
+                        } @else {
+                        <option [ngValue]="null">Seleccione...</option>
+                        @for (item of dedicationTimeList; track $index) {
+                        <option [ngValue]="item.codigo">{{item.denominacion}}</option>
+                        }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 
@@ -324,8 +578,8 @@
     <button type="submit" class="btn btn-primary btn-progress" placement="top" ngbTooltip="Guardando..."
         [disabled]="loadingSaveTeacher"><i class="fas fa-save"></i> Guardar</button>
     }@else {
-    <button class="btn btn-primary btn-icon icon-left me-3" placement="top"
-        ngbTooltip="Realizar Busqueda" [disabled]="loadingSaveTeacher" (click)="search()"><i class="fas fa-save"></i>
+    <button class="btn btn-primary btn-icon icon-left me-3" placement="top" ngbTooltip="Realizar Busqueda"
+        [disabled]="loadingSaveTeacher" (click)="search()"><i class="fas fa-save"></i>
         Buscar</button>
     }
     <button class="btn btn-secondary" (click)="close()">Cancelar</button>

@@ -65,7 +65,11 @@
             </ngx-datatable-column>
             <ngx-datatable-column name="Documento">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    {{row.documento}}
+                    @if (row.documento) {
+                        <a class="text-primary text-decoration-underline fw-bold" (click)="openPdfModal(row.docenteAcademicoId)"><i class="far fa-file-pdf"></i> {{row.documento?.denominacion || 'document.pdf'}}</a>
+                    } @else {
+                        - - -
+                    }
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column name="Acciones" [sortable]=false>

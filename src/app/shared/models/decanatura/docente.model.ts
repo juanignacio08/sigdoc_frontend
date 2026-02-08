@@ -61,6 +61,20 @@ export interface DocenteFilter {
   status ?: number,
   dateCreationStart ?: number,
   dateCreationEnd ?: number
+
+  academicGrade ?: string,
+  professionalTitle ?: string,
+  academicInstitute ?: string,
+  academicSpecialty ?: string
+
+  departmentAcademicId ?: number,
+  institutionalCode ?: string,
+  workRegimeCode ?: string,
+  categoryCode ?: string,
+  levelCode ?: string,
+  dedicationTime ?: string,
+  startDate ?: string,
+  endDate ?: string
 }
 
 export type DocenteResponse = ResponseDTO<Docente>;

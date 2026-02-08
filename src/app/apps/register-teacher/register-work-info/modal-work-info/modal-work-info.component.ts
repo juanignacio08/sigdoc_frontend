@@ -58,7 +58,6 @@ export class ModalWorkInfoComponent implements OnInit {
     this.initForm();
 
     this.loadFaculty();
-    this.loadTeacherCategory();
     this.loadWorkRegime();
     this.loadTeacherCategory();
     this.loadTeacherLevel();

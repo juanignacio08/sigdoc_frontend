@@ -2,7 +2,7 @@ import { PaginatedResponseDTO } from "../base/paginateddto.model";
 import { ResponseDTO } from "../base/responsedto.model";
 import { TablaMaestra } from "../maestros/tablamaestra.model";
 import { Docente } from "./docente.model";
-import { Documento } from "./documento.model";
+import { Documento, DocumentoRequest } from "./documento.model";
 
 export interface DocenteAcademico {
     docenteAcademicoId: number,
@@ -24,7 +24,7 @@ export interface DocenteAcademicoRequest {
     institucionEgreso: string,
     fechaObtencion?: string,
     especialidad?: string,
-    documento?: Documento,
+    documento?: DocumentoRequest,
     estado?: number
 }
 

@@ -10,6 +10,15 @@ export interface Documento {
     estado: number
 }
 
+export interface DocumentoRequest {
+    documentoId: number,
+    denominacion: string,
+    codTipoDocumento: string,
+    url?: string,
+    docenteId: number,
+    estado: number
+}
+
 export type DocumentoResponse = ResponseDTO<Documento>;
 export type DocumentoListResponse = ResponseDTO<Documento[]>;
 

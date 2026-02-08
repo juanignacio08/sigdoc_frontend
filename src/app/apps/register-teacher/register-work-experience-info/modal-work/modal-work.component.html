@@ -1,0 +1,83 @@
+<div class="modal-header p-0">
+    <div class="container p-3 pt-4">
+        <div class="row align-items-center mb-0">
+            <div class="col-2 text-success text-center">
+                <i class="far fa-file-alt fs-2"></i>
+            </div>
+            <div class="col-10">
+                <p class="fs-5 fw-bold text-main mb-0">{{title}}</p>
+            </div>
+        </div>
+        <hr class="mb-0 mt-2">
+    </div>
+</div>
+
+<div class="modal-body p-0">
+    <form [formGroup]="workExperienceForm">
+        <div class="container px-3">
+            <div class="row px-3">
+                <!-- EMPRESA -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control form-control-sm" id="empresa"
+                            formControlName="empresa" [class.is-invalid]="isInvalid('empresa')" placeholder="">
+                        <label for="empresa">Empresa | Institución</label>
+                    </div>
+                </div>
+
+                <!-- CARGO -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control form-control-sm" id="cargo"
+                            formControlName="cargo" [class.is-invalid]="isInvalid('cargo')" placeholder="">
+                        <label for="cargo">Cargo</label>
+                    </div>
+                </div>
+
+                <!-- DESCRIPCION -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control form-control-sm" id="descripcion"
+                            formControlName="descripcion" placeholder="">
+                        <label for="descripcion">Descripcion de Funciones:</label>
+                    </div>
+                </div>
+
+                <!-- Fecha inicio -->
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control form-control-sm" id="fechaInicio"
+                            formControlName="fechaInicio">
+                        <label for="fechaInicio">Fecha inicio</label>
+                    </div>
+                </div>
+
+                <!-- Fecha fin -->
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control form-control-sm" id="fechaFin"
+                            formControlName="fechaFin">
+                        <label for="fechaFin">Fecha fin</label>
+                    </div>
+                </div>
+
+                <!-- Documento -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control form-control-sm" id="documento"
+                            (change)="onFileSelected($event)">
+                        <label for="documento">Documento</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success btn-icon icon-left me-3" placement="top"
+        ngbTooltip="Guardar Información" [disabled]="!workExperienceForm.valid" (click)="submit()"><i
+            class="fas fa-save"></i>
+        Guardar</button>
+    <button class="btn btn-info" (click)="close()">Cerrar</button>
+</div>

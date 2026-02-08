@@ -23,6 +23,12 @@ export class TablaMaestraService {
   DOCENTE_NOMBRADO = '008001';
   DOCENTE_CONTRATADO = '008002';
 
+  COD_DOCUMENTO_IDENTIDAD = '005001';
+  COD_GRADO_TITULO = '005002';
+  COD_CURRICULUM_VITAE = '005003'
+  COD_CERTIFICADO_DIPLOMA = '005004';
+  COD_OTRO_DOCUMENTO = '005005';
+
   http = inject(HttpClient);
 
   private readonly baseUrl = environment.apiUrl + "/master-table";

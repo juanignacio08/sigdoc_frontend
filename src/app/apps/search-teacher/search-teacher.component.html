@@ -67,7 +67,7 @@
 
               <ngx-datatable-column name="Nro" [width]="60">
                 <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex">
-                  {{ rowIndex + 1 }}
+                  {{ pageNumber * pageSize + rowIndex + 1 }}
                 </ng-template>
               </ngx-datatable-column>
 

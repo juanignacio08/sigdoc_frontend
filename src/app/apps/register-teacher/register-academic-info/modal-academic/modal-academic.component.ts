@@ -6,9 +6,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Docente } from '@shared/models/decanatura/docente.model';
-import { DocenteAcademico, DocenteAcademicoRequest } from '@shared/models/decanatura/docenteacademico.model';
+import {
+  DocenteAcademico,
+  DocenteAcademicoRequest,
+} from '@shared/models/decanatura/docenteacademico.model';
 import { TablaMaestra } from '@shared/models/maestros/tablamaestra.model';
 import { TablaMaestraService } from 'app/services/maestros/tabla-maestra.service';
 
@@ -21,10 +24,11 @@ import { TablaMaestraService } from 'app/services/maestros/tabla-maestra.service
 export class ModalAcademicComponent implements OnInit {
   @Input() teacherAcademic?: DocenteAcademico;
   @Input() teacherActive?: Docente;
-  @Input() action : string = 'add';
+  @Input() action: string = 'add';
   @Input() title: string = 'Registrar Grado Académico';
 
   academicInfoForm!: FormGroup;
+  selectedFile?: File;
 
   academicGradeList: TablaMaestra[] = [];
 
@@ -45,6 +49,7 @@ export class ModalAcademicComponent implements OnInit {
     private fb: FormBuilder,
     public activeModal: NgbActiveModal,
     private http: HttpClient,
+    // private modalService: NgbModal,
   ) {}
 
   ngOnInit(): void {
@@ -55,7 +60,7 @@ export class ModalAcademicComponent implements OnInit {
       this.loadUniversities();
       if (this.action === 'edit' && this.teacherAcademic) {
         this.setForm();
-      }  
+      }
     }
   }
 
@@ -66,24 +71,32 @@ export class ModalAcademicComponent implements OnInit {
       institucionEgreso: ['', Validators.required],
       fechaObtencion: [null],
       especialidad: [''],
-      documento: [''],
     });
   }
 
   private setForm() {
-    console.log(this.teacherAcademic);
-    
-    this.academicInfoForm.get('codGradoAcademico')?.setValue(this.teacherAcademic?.codGradoAcademico.codigo);
-    this.academicInfoForm.get('tituloProfesional')?.setValue(this.teacherAcademic?.tituloProfesional);
-    this.academicInfoForm.get('institucionEgreso')?.setValue(this.teacherAcademic?.institucionEgreso);
+    this.academicInfoForm
+      .get('codGradoAcademico')
+      ?.setValue(this.teacherAcademic?.codGradoAcademico.codigo);
+    this.academicInfoForm
+      .get('tituloProfesional')
+      ?.setValue(this.teacherAcademic?.tituloProfesional);
+    this.academicInfoForm
+      .get('institucionEgreso')
+      ?.setValue(this.teacherAcademic?.institucionEgreso);
     if (this.teacherAcademic?.fechaObtencion) {
-      this.academicInfoForm.get('fechaObtencion')?.setValue(this.formatDateToISO(this.teacherAcademic?.fechaObtencion));
+      this.academicInfoForm
+        .get('fechaObtencion')
+        ?.setValue(this.formatDateToISO(this.teacherAcademic?.fechaObtencion));
     }
-    this.academicInfoForm.get('especialidad')?.setValue(this.teacherAcademic?.especialidad);
+    this.academicInfoForm
+      .get('especialidad')
+      ?.setValue(this.teacherAcademic?.especialidad);
     if (this.teacherAcademic?.documento) {
-      this.academicInfoForm.get('documento')?.setValue(this.teacherAcademic?.documento.denominacion);
+      this.academicInfoForm
+        .get('documento')
+        ?.setValue(this.teacherAcademic?.documento.denominacion);
     }
-
   }
 
   loadUniversities() {
@@ -143,7 +156,7 @@ export class ModalAcademicComponent implements OnInit {
     const valor = this.academicInfoForm.get('institucionEgreso')?.value || '';
 
     if (!valor.trim()) {
-      this.resultadoCarrera = [];
+      this.resultadoUniversidad = [];
       return;
     }
 
@@ -185,7 +198,10 @@ export class ModalAcademicComponent implements OnInit {
 
   submit() {
     if (this.academicInfoForm.valid && this.teacherActive) {
-      this.activeModal.close(this.fromFormToAcademicTeacher());
+      this.activeModal.close({
+        data: this.fromFormToAcademicTeacher(),
+        file: this.selectedFile,
+      });
 
       setTimeout(() => {
         (document.activeElement as HTMLElement)?.blur();
@@ -195,8 +211,11 @@ export class ModalAcademicComponent implements OnInit {
 
   confirmDelete() {
     if (this.teacherActive && this.teacherAcademic) {
-      this.activeModal.close(this.teacherAcademic);
-      
+      this.activeModal.close({
+        data: this.teacherAcademic,
+        file: undefined,
+      });
+
       setTimeout(() => {
         (document.activeElement as HTMLElement)?.blur();
       });
@@ -210,16 +229,36 @@ export class ModalAcademicComponent implements OnInit {
     });
   }
 
-  fromFormToAcademicTeacher() : DocenteAcademicoRequest {
-    const academicTeacher : DocenteAcademicoRequest = {
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
+  }
+
+  fromFormToAcademicTeacher(): DocenteAcademicoRequest {
+    const academicTeacher: DocenteAcademicoRequest = {
       docenteAcademicoId: this.teacherAcademic?.docenteAcademicoId || 1,
       docenteId: this.teacherActive?.docenteId || 0,
       codGradoAcademico: this.academicInfoForm.get('codGradoAcademico')?.value,
       tituloProfesional: this.academicInfoForm.get('tituloProfesional')?.value,
       institucionEgreso: this.academicInfoForm.get('institucionEgreso')?.value,
       fechaObtencion: this.emptyToUndefined(this.getDate()),
-      especialidad: this.emptyToUndefined(this.academicInfoForm.get('especialidad')?.value),
-      estado: 1
+      especialidad: this.emptyToUndefined(
+        this.academicInfoForm.get('especialidad')?.value,
+      ),
+      estado: 1,
+    };
+
+    if (this.selectedFile) {
+      academicTeacher.documento = {
+        documentoId: this.teacherAcademic?.documento?.documentoId || 1,
+        //denominacion: this.getDateAndTimeCurrent() + '_' + this.teacherActive?.nombre + '_' + this.teacherActive?.apellidoPaterno + '_grado_academico.pdf',
+        denominacion: this.selectedFile.name,
+        codTipoDocumento: this.masterTableService.COD_GRADO_TITULO,
+        docenteId: this.teacherActive?.docenteId || 0,
+        estado: 1,
+      };
     }
 
     return this.removeUndefined(academicTeacher);
@@ -260,4 +299,26 @@ export class ModalAcademicComponent implements OnInit {
     }
     return '';
   }
+
+  // private getDateAndTimeCurrent(): string {
+  //   const fechaActual = new Date();
+  //   const anio = fechaActual.getFullYear();
+  //   const mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
+  //   const dia = String(fechaActual.getDate()).padStart(2, '0');
+  //   const horas = String(fechaActual.getHours()).padStart(2, '0');
+  //   const minutos = String(fechaActual.getMinutes()).padStart(2, '0');
+  //   const segundos = String(fechaActual.getSeconds()).padStart(2, '0');
+  //   return `${anio}${mes}${dia}_${horas}${minutos}${segundos}`;
+  // }
+
+  // openPdfModal(teacherAcademicId: number) {
+  //   const modalRef = this.modalService.open(ModalPdfViewerComponent, {
+  //     size: 'xl',
+  //     centered: true,
+  //     backdrop: 'static',
+  //     scrollable: true,
+  //   });
+
+  //   modalRef.componentInstance.docenteAcademicoId = teacherAcademicId;
+  // }
 }

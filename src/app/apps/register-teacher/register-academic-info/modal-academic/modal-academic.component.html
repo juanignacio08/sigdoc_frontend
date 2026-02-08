@@ -115,9 +115,12 @@
                     </div>
                 </div>
                 <div class="col-12">
+                    <!-- @if (teacherAcademic && teacherAcademic.documento) {
+                        <p><span class="badge text-bg-info" (click)="openPdfModal(teacherAcademic.docenteAcademicoId)" style="cursor: pointer;">(<i class="far fa-file-pdf"></i> {{teacherAcademic.documento.denominacion}})</span></p>
+                    
+                    } -->
                     <div class="form-floating mb-3">
-                        <input type="file" id="documento" class="form-control form-control-sm"
-                            formControlName="documento">
+                        <input type="file" id="documento" accept="application/pdf" class="form-control form-control-sm" (change)="onFileSelected($event)">
                         <label for="documento">Documento</label>
 
                     </div>

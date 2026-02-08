@@ -9,9 +9,13 @@ import {
   DatatableComponent,
   NgxDatatableModule,
 } from '@swimlane/ngx-datatable';
-import { DocenteAcademico, DocenteAcademicoRequest } from '@shared/models/decanatura/docenteacademico.model';
+import {
+  DocenteAcademico,
+  DocenteAcademicoRequest,
+} from '@shared/models/decanatura/docenteacademico.model';
 import { DocenteacademicoService } from '../../../services/decanatura/docenteacademico.service';
 import { ModalAcademicComponent } from './modal-academic/modal-academic.component';
+import { ModalPdfViewerComponent } from '@shared/components/modal-pdf-viewer/modal-pdf-viewer.component';
 
 @Component({
   selector: 'app-register-academic-info',
@@ -61,29 +65,32 @@ export class RegisterAcademicInfoComponent implements OnInit {
     if (this.teacherActive) {
       this.loadingIndicator = true;
       this.teacherAcademicService
-      .getAllPage(page, size, this.teacherActive.numDocumento)
-      .subscribe({
-        next: (response) => {
-          this.academicGradeList = response.data;
-          this.pageNumber = response.currentPage;
-          this.pageSize = size;
-          this.totalItems = response.totalItems;
-          this.loadingIndicator = false;
-        }, 
-        error: (err) => {
-          this.loadingOperation = false;
-          if ([409, 400, 404, 500].includes(err.error.status)) {
-            this.showError(err.error.detail);
-          } else {
-            this.showError('Error desconocido. Intentelo de nuevo...');
-          }
-        }
-      });
+        .getAllPage(page, size, this.teacherActive.numDocumento)
+        .subscribe({
+          next: (response) => {
+            this.academicGradeList = response.data;
+            this.pageNumber = response.currentPage;
+            this.pageSize = size;
+            this.totalItems = response.totalItems;
+            this.loadingIndicator = false;
+          },
+          error: (err) => {
+            this.loadingOperation = false;
+            if ([409, 400, 404, 500].includes(err.error.status)) {
+              this.showError(err.error.detail);
+            } else {
+              this.showError('Error desconocido. Intentelo de nuevo...');
+            }
+          },
+        });
     }
-    
   }
 
-  openModalInformative(action: string, title: string, teacherAcademic: DocenteAcademico | null) {
+  openModalInformative(
+    action: string,
+    title: string,
+    teacherAcademic: DocenteAcademico | null,
+  ) {
     const modalRef = this.modalService.open(ModalAcademicComponent, {
       size: 'md',
       centered: true,
@@ -99,57 +106,49 @@ export class RegisterAcademicInfoComponent implements OnInit {
     // opcional: recibir resultado cuando se cierre
     modalRef.result.then(
       (result) => {
-        const academicTeacher : DocenteAcademicoRequest = result;
+        const { data, file } = result;
         switch (action) {
-          case 'add':             
-            this.addAcademicTeacher(academicTeacher);
+          case 'add':
+            this.addAcademicTeacher(data, file);
             break;
           case 'edit':
-            this.editAcademicTeacher(academicTeacher);
-            break;  
+            this.editAcademicTeacher(data, file);
+            break;
           case 'delete':
-            this.deleteAcademicTeacher(academicTeacher.docenteAcademicoId);
+            this.deleteAcademicTeacher(data.docenteAcademicoId);
             break;
         }
-        
       },
       (reason) => {
         // dismissed (esc o backdrop)
         console.log('cerrado con dismissed');
-        
       },
     );
   }
 
-  addAcademicTeacher(academicTeacher : DocenteAcademicoRequest) {
+  addAcademicTeacher(academicTeacher: DocenteAcademicoRequest, file?: File) {
     this.loadingOperation = true;
-    this.teacherAcademicService.save(academicTeacher).subscribe({
-      next: response => {
-        console.log(response.data);
+    this.teacherAcademicService.save(academicTeacher, file).subscribe({
+      next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Grado Académico registrado con éxito!');
         this.loadAcademicsGrades(0, 10);
-      }, 
+      },
       error: (err) => {
         this.loadingOperation = false;
-        if ([409, 400, 404, 500].includes(err.error.status)) {
-          this.showError(err.error.detail);
-        } else {
-          this.showError('Error desconocido. Intentelo de nuevo...');
-        }
-      }
+        this.showError(err.error?.detail || 'Error desconocido');
+      },
     });
   }
 
-  editAcademicTeacher(academicTeacher : DocenteAcademicoRequest) {
+  editAcademicTeacher(academicTeacher: DocenteAcademicoRequest, file?: File) {
     this.loadingOperation = true;
-    this.teacherAcademicService.update(academicTeacher).subscribe({
-      next: response => {
-        console.log(response.data);
+    this.teacherAcademicService.update(academicTeacher, file).subscribe({
+      next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Grado Académico editado con éxito!');
         this.loadAcademicsGrades(0, 10);
-      }, 
+      },
       error: (err) => {
         this.loadingOperation = false;
         if ([409, 400, 404, 500].includes(err.error.status)) {
@@ -157,19 +156,19 @@ export class RegisterAcademicInfoComponent implements OnInit {
         } else {
           this.showError('Error desconocido. Intentelo de nuevo...');
         }
-      }
+      },
     });
   }
 
-  deleteAcademicTeacher(academicTeacherId : number) {
+  deleteAcademicTeacher(academicTeacherId: number) {
     this.loadingOperation = true;
     this.teacherAcademicService.delete(academicTeacherId).subscribe({
-      next: response => {
+      next: (response) => {
         console.log(response.data);
         this.loadingOperation = false;
         this.showInfo('Grado Académico eliminado!');
         this.loadAcademicsGrades(0, 10);
-      }, 
+      },
       error: (err) => {
         this.loadingOperation = false;
         if ([409, 400, 404, 500].includes(err.error.status)) {
@@ -177,7 +176,7 @@ export class RegisterAcademicInfoComponent implements OnInit {
         } else {
           this.showError('Error desconocido. Intentelo de nuevo...');
         }
-      }
+      },
     });
   }
 
@@ -204,4 +203,16 @@ export class RegisterAcademicInfoComponent implements OnInit {
       });
     }
   }
+
+  openPdfModal(teacherAcademicId: number) {
+    const modalRef = this.modalService.open(ModalPdfViewerComponent, {
+      size: 'xl',
+      centered: true,
+      backdrop: 'static',
+      scrollable: true,
+    });
+
+    modalRef.componentInstance.docenteAcademicoId = teacherAcademicId;
+  }
+
 }
