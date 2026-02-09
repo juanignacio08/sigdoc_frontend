@@ -3,7 +3,7 @@ import { ResponseDTO } from "../base/responsedto.model";
 import { DepartamentoAcademico } from "../maestros/departamentoacademico.model";
 import { TablaMaestra } from "../maestros/tablamaestra.model";
 import { Docente } from "./docente.model";
-import { Documento } from "./documento.model";
+import { Documento, DocumentoRequest } from "./documento.model";
 
 export interface DocenteLaboral {
     docenteLaboralId: number,
@@ -33,7 +33,7 @@ export interface DocenteLaboralRequest {
     codTiempoDedicacion?: string,
     fechaInicio?: string,
     fechaFin?: string,
-    documento?: Documento,
+    documento?: DocumentoRequest,
     estado: number
 }
 

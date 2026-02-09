@@ -107,13 +107,13 @@ export class RegisterWorkInfoComponent implements OnInit {
     // opcional: recibir resultado cuando se cierre
     modalRef.result.then(
       (result) => {
-        const workTeacher: DocenteLaboralRequest = result;
+        const { data, file } = result;
         switch (action) {
           case 'add':
-            this.addWorkTeacher(workTeacher);
+            this.addWorkTeacher(data, file);
             break;
           case 'edit':
-            this.editWorkTeacher(workTeacher);
+            this.editWorkTeacher(data);
             break;
           case 'delete':
             break;
@@ -126,11 +126,10 @@ export class RegisterWorkInfoComponent implements OnInit {
     );
   }
 
-  addWorkTeacher(workTeacher: DocenteLaboralRequest) {
+  addWorkTeacher(workTeacher: DocenteLaboralRequest, file?: File) {
     this.loadingOperation = true;
-    this.workTeacherService.save(workTeacher).subscribe({
+    this.workTeacherService.save(workTeacher, file).subscribe({
       next: (response) => {
-        console.log(response.data);
         this.loadingOperation = false;
         this.showInfo('Información laboral registrado con éxito!');
         this.loadWorkTeacher(0, 10);

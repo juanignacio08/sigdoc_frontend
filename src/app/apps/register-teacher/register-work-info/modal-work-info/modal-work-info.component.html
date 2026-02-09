@@ -1,3 +1,14 @@
+@if (action === 'delete') {
+<div class="row p-3 pt-4">
+    <div class="col-12 text-center text-danger">
+        <p class="fs-4 fw-bold">¿Esta seguro de eliminar el registro laboral?</p>
+    </div>
+    <div class="col-12 text-center mt-2 mb-0">
+        <button class="btn btn-danger me-2" (click)="confirmDelete()">Si</button>
+        <button class="btn btn-info ms-2" (click)="close()">No</button>
+    </div>
+</div>
+} @else {
 <div class="modal-header p-0">
     <div class="container p-3 pt-4">
         <div class="row align-items-center mb-0">
@@ -34,7 +45,8 @@
                         <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                         }
                         @if (controls.academicDepartment.error) {
-                        <a style="cursor: pointer;" class="text-danger" (click)="retryFaculty()">(Ocurrio un error...)</a>
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryFaculty()">(Ocurrio un
+                            error...)</a>
                         }
                         <label for="facultadId">Facultad</label>
                     </div>
@@ -69,7 +81,8 @@
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control form-control-sm" id="codigoInstitucional"
-                            formControlName="codigoInstitucional" [class.is-invalid]="isInvalid('codigoInstitucional')" placeholder="">
+                            formControlName="codigoInstitucional" [class.is-invalid]="isInvalid('codigoInstitucional')"
+                            placeholder="">
                         <label for="codigoInstitucional">Código institucional</label>
                     </div>
                 </div>
@@ -174,14 +187,18 @@
                 </div>
 
                 <!-- Documento -->
+                @if (fileError) {
+                <small class="text-danger">
+                    {{ fileError }}
+                </small>
+                }
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <input type="file" class="form-control form-control-sm" id="documento"
+                        <input type="file" id="documento" accept="application/pdf" class="form-control form-control-sm"
                             (change)="onFileSelected($event)">
                         <label for="documento">Documento</label>
                     </div>
                 </div>
-
             </div>
         </div>
     </form>
@@ -189,8 +206,8 @@
 
 <div class="modal-footer">
     <button type="submit" class="btn btn-success btn-icon icon-left me-3" placement="top"
-        ngbTooltip="Guardar Información" [disabled]="!workInfoForm.valid" (click)="submit()"><i
-            class="fas fa-save"></i>
+        ngbTooltip="Guardar Información" [disabled]="!workInfoForm.valid" (click)="submit()"><i class="fas fa-save"></i>
         Guardar</button>
     <button class="btn btn-info" (click)="close()">Cerrar</button>
 </div>
+}

@@ -7,7 +7,10 @@ import {
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Docente } from '@shared/models/decanatura/docente.model';
-import { DocenteLaboral, DocenteLaboralRequest } from '@shared/models/decanatura/docentelaboral.model';
+import {
+  DocenteLaboral,
+  DocenteLaboralRequest,
+} from '@shared/models/decanatura/docentelaboral.model';
 import { DepartamentoAcademico } from '@shared/models/maestros/departamentoacademico.model';
 import { Facultad } from '@shared/models/maestros/facultad.model';
 import { TablaMaestra } from '@shared/models/maestros/tablamaestra.model';
@@ -36,6 +39,9 @@ export class ModalWorkInfoComponent implements OnInit {
   teacherLevelList: TablaMaestra[] = [];
   dedicationTimeList: TablaMaestra[] = [];
 
+  selectedFile?: File;
+  fileError: string | null = null;
+
   controls = {
     faculty: { loading: false, error: false },
     academicDepartment: { loading: false, error: false },
@@ -55,42 +61,44 @@ export class ModalWorkInfoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.initForm();
+    if (this.action !== 'view' && this.action !== 'delete') {
+      this.initForm();
 
-    this.loadFaculty();
-    this.loadWorkRegime();
-    this.loadTeacherCategory();
-    this.loadTeacherLevel();
-    this.loadDedicationTime();
+      this.loadFaculty();
+      this.loadWorkRegime();
+      this.loadTeacherCategory();
+      this.loadTeacherLevel();
+      this.loadDedicationTime();
 
-    this.workInfoForm
-      .get('codRegimenLaboral')
-      ?.valueChanges.subscribe((value) => {
-        if (value === this.masterTableService.DOCENTE_NOMBRADO) {
-          this.workInfoForm.get('codCategoriaDocenteNombrado')?.enable();
-          this.workInfoForm.get('codNivelDocenteContratado')?.disable();
-          this.workInfoForm.get('codNivelDocenteContratado')?.reset();
-        } else if (value === this.masterTableService.DOCENTE_CONTRATADO) {
-          this.workInfoForm.get('codNivelDocenteContratado')?.enable();
-          this.workInfoForm.get('codCategoriaDocenteNombrado')?.disable();
-          this.workInfoForm.get('codCategoriaDocenteNombrado')?.reset();
-        } else {
-          // por defecto ambos bloqueados
-          this.workInfoForm.get('codCategoriaDocenteNombrado')?.disable();
-          this.workInfoForm.get('codNivelDocenteContratado')?.disable();
+      this.workInfoForm
+        .get('codRegimenLaboral')
+        ?.valueChanges.subscribe((value) => {
+          if (value === this.masterTableService.DOCENTE_NOMBRADO) {
+            this.workInfoForm.get('codCategoriaDocenteNombrado')?.enable();
+            this.workInfoForm.get('codNivelDocenteContratado')?.disable();
+            this.workInfoForm.get('codNivelDocenteContratado')?.reset();
+          } else if (value === this.masterTableService.DOCENTE_CONTRATADO) {
+            this.workInfoForm.get('codNivelDocenteContratado')?.enable();
+            this.workInfoForm.get('codCategoriaDocenteNombrado')?.disable();
+            this.workInfoForm.get('codCategoriaDocenteNombrado')?.reset();
+          } else {
+            // por defecto ambos bloqueados
+            this.workInfoForm.get('codCategoriaDocenteNombrado')?.disable();
+            this.workInfoForm.get('codNivelDocenteContratado')?.disable();
+          }
+        });
+
+      this.workInfoForm.get('facultadId')?.valueChanges.subscribe((value) => {
+        this.academicDepartmentList = [];
+        this.workInfoForm.get('departamentoId')?.setValue(null);
+        if (value != null && value !== '') {
+          this.onAcademicDepartmentChange(value);
         }
       });
 
-    this.workInfoForm.get('facultadId')?.valueChanges.subscribe((value) => {
-      this.academicDepartmentList = [];
-      this.workInfoForm.get('departamentoId')?.setValue(null);
-      if (value != null && value !== '') {
-        this.onAcademicDepartmentChange(value);
+      if (this.action === 'edit' && this.teacherWork) {
+        this.setForm();
       }
-    });
-
-    if (this.action === 'edit' && this.teacherWork) {
-      this.setForm();
     }
   }
 
@@ -99,7 +107,10 @@ export class ModalWorkInfoComponent implements OnInit {
       facultadId: [null, Validators.required],
       departamentoId: [null, Validators.required],
       codigoInstitucional: ['', Validators.required],
-      emailInstitucional: [this.teacherActive?.emailInstitucional, Validators.email],
+      emailInstitucional: [
+        this.teacherActive?.emailInstitucional,
+        Validators.email,
+      ],
       codRegimenLaboral: [null, Validators.required],
 
       codCategoriaDocenteNombrado: [{ value: null, disabled: true }],
@@ -108,41 +119,51 @@ export class ModalWorkInfoComponent implements OnInit {
       codTiempoDedicacion: [null],
       fechaInicio: [null],
       fechaFin: [null],
-      documento: [null],
-      estado: [1]
+      estado: [1],
     });
   }
 
   private setForm() {
-    console.log(this.teacherWork);
-    
-    this.workInfoForm.get('facultadId')?.setValue(this.teacherWork?.departamentoAcademico.facultad.facultadId);
-    this.workInfoForm.get('codigoInstitucional')?.setValue(this.teacherWork?.codigoInstitucional);
-    this.workInfoForm.get('emailInstitucional')?.setValue(this.teacherWork?.emailInstitucional);
-    this.workInfoForm.get('codRegimenLaboral')?.setValue(this.teacherWork?.codRegimenLaboral.codigo);
+    this.workInfoForm
+      .get('facultadId')
+      ?.setValue(this.teacherWork?.departamentoAcademico.facultad.facultadId);
+    this.workInfoForm
+      .get('codigoInstitucional')
+      ?.setValue(this.teacherWork?.codigoInstitucional);
+    this.workInfoForm
+      .get('emailInstitucional')
+      ?.setValue(this.teacherWork?.emailInstitucional);
+    this.workInfoForm
+      .get('codRegimenLaboral')
+      ?.setValue(this.teacherWork?.codRegimenLaboral.codigo);
     if (this.teacherWork?.codCategoriaDocenteNombrado) {
-      this.workInfoForm.get('codCategoriaDocenteNombrado')?.setValue(this.teacherWork?.codCategoriaDocenteNombrado.codigo);
+      this.workInfoForm
+        .get('codCategoriaDocenteNombrado')
+        ?.setValue(this.teacherWork?.codCategoriaDocenteNombrado.codigo);
     }
     if (this.teacherWork?.codNivelDocenteContratado) {
-      this.workInfoForm.get('codNivelDocenteContratado')?.setValue(this.teacherWork?.codNivelDocenteContratado.codigo);
+      this.workInfoForm
+        .get('codNivelDocenteContratado')
+        ?.setValue(this.teacherWork?.codNivelDocenteContratado.codigo);
     }
     if (this.teacherWork?.codTiempoDedicacion) {
-      this.workInfoForm.get('codTiempoDedicacion')?.setValue(this.teacherWork?.codTiempoDedicacion.codigo);
+      this.workInfoForm
+        .get('codTiempoDedicacion')
+        ?.setValue(this.teacherWork?.codTiempoDedicacion.codigo);
     }
 
     if (this.teacherWork?.fechaInicio) {
-      this.workInfoForm.get('fechaInicio')?.setValue(this.formatDateToISO(this.teacherWork?.fechaInicio));
+      this.workInfoForm
+        .get('fechaInicio')
+        ?.setValue(this.formatDateToISO(this.teacherWork?.fechaInicio));
     }
     if (this.teacherWork?.fechaFin) {
-      this.workInfoForm.get('fechaFin')?.setValue(this.formatDateToISO(this.teacherWork?.fechaFin));
-    }
-
-    if (this.teacherWork?.documento) {
-      this.workInfoForm.get('documento')?.setValue(this.teacherWork?.documento.denominacion);
+      this.workInfoForm
+        .get('fechaFin')
+        ?.setValue(this.formatDateToISO(this.teacherWork?.fechaFin));
     }
 
     this.workInfoForm.get('estado')?.setValue(this.teacherWork?.estado);
-    
   }
 
   onAcademicDepartmentChange(facultyId: number) {
@@ -172,8 +193,8 @@ export class ModalWorkInfoComponent implements OnInit {
   }
 
   loadAcademicDepartment(facultyId: number) {
-    console.log("ejecutando");
-    
+    console.log('ejecutando');
+
     this.controls.academicDepartment.loading = true;
     this.controls.academicDepartment.error = false;
     this.workInfoForm.get('departamentoId')?.disable();
@@ -182,10 +203,14 @@ export class ModalWorkInfoComponent implements OnInit {
       next: (response) => {
         this.academicDepartmentList = response.data;
         console.log(this.academicDepartmentList);
-        
+
         this.controls.academicDepartment.loading = false;
         if (this.teacherWork) {
-          this.workInfoForm.get('departamentoId')?.setValue(this.teacherWork.departamentoAcademico.departamentoAcademicoId);
+          this.workInfoForm
+            .get('departamentoId')
+            ?.setValue(
+              this.teacherWork.departamentoAcademico.departamentoAcademicoId,
+            );
         }
         this.workInfoForm.get('departamentoId')?.enable();
       },
@@ -299,14 +324,29 @@ export class ModalWorkInfoComponent implements OnInit {
 
   submit() {
     if (this.workInfoForm.valid && this.teacherActive) {
-      this.activeModal.close(this.fromFormToTeacherWork());
+      this.activeModal.close({
+        data: this.fromFormToTeacherWork(),
+        file: this.selectedFile,
+      });
 
       setTimeout(() => {
         (document.activeElement as HTMLElement)?.blur();
       });
     } else {
       console.log('no entro');
-      
+    }
+  }
+
+  confirmDelete() {
+    if (this.teacherActive && this.teacherWork) {
+      this.activeModal.close({
+        data: this.teacherWork,
+        file: undefined,
+      });
+
+      setTimeout(() => {
+        (document.activeElement as HTMLElement)?.blur();
+      });
     }
   }
 
@@ -322,13 +362,32 @@ export class ModalWorkInfoComponent implements OnInit {
     return !!(control && control.invalid && control.touched);
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.workInfoForm.patchValue({
-        documento: file,
-      });
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) {
+      return;
     }
+
+    const file = input.files[0];
+
+    if (file.type !== 'application/pdf') {
+      this.fileError = 'Solo se permiten archivos PDF';
+      this.selectedFile = undefined;
+      input.value = '';
+      return;
+    }
+
+    const maxSize = 20 * 1024 * 1024; // 20MB
+
+    if (file.size > maxSize) {
+      this.fileError = 'El archivo no debe superar los 20 MB';
+      this.selectedFile = undefined;
+      input.value = '';
+      return;
+    }
+
+    this.fileError = null;
+    this.selectedFile = file;
   }
 
   fromFormToTeacherWork(): DocenteLaboralRequest {
@@ -336,16 +395,37 @@ export class ModalWorkInfoComponent implements OnInit {
       docenteLaboralId: this.teacherWork?.docenteLaboralId || 1,
       docenteId: this.teacherActive?.docenteId || 0,
       departamentoId: this.workInfoForm.get('departamentoId')?.value,
-      codigoInstitucional: this.emptyToUndefined(this.workInfoForm.get('codigoInstitucional')?.value),
-      emailInstitucional: this.emptyToUndefined(this.workInfoForm.get('emailInstitucional')?.value),
+      codigoInstitucional: this.emptyToUndefined(
+        this.workInfoForm.get('codigoInstitucional')?.value,
+      ),
+      emailInstitucional: this.emptyToUndefined(
+        this.workInfoForm.get('emailInstitucional')?.value,
+      ),
       codRegimenLaboral: this.workInfoForm.get('codRegimenLaboral')?.value,
-      codCategoriaDocenteNombrado: this.emptyToUndefined(this.workInfoForm.get('codCategoriaDocenteNombrado')?.value),
-      codNivelDocenteContratado: this.emptyToUndefined(this.workInfoForm.get('codNivelDocenteContratado')?.value),
-      codTiempoDedicacion: this.emptyToUndefined(this.workInfoForm.get('codTiempoDedicacion')?.value),
+      codCategoriaDocenteNombrado: this.emptyToUndefined(
+        this.workInfoForm.get('codCategoriaDocenteNombrado')?.value,
+      ),
+      codNivelDocenteContratado: this.emptyToUndefined(
+        this.workInfoForm.get('codNivelDocenteContratado')?.value,
+      ),
+      codTiempoDedicacion: this.emptyToUndefined(
+        this.workInfoForm.get('codTiempoDedicacion')?.value,
+      ),
       fechaInicio: this.emptyToUndefined(this.getDate('fechaInicio')),
       fechaFin: this.emptyToUndefined(this.getDate('fechaFin')),
       estado: 1,
     };
+
+    if (this.selectedFile) {
+      workTeacher.documento = {
+        documentoId: this.teacherWork?.documento?.documentoId || 1,
+        //denominacion: this.getDateAndTimeCurrent() + '_' + this.teacherActive?.nombre + '_' + this.teacherActive?.apellidoPaterno + '_grado_academico.pdf',
+        denominacion: this.selectedFile.name,
+        codTipoDocumento: this.masterTableService.COD_CERTIFICADO_DIPLOMA,
+        docenteId: this.teacherActive?.docenteId || 0,
+        estado: 1,
+      };
+    }
 
     return this.removeUndefined(workTeacher);
   }

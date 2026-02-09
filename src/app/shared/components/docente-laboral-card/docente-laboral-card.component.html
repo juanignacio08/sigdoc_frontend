@@ -2,11 +2,11 @@
     <div class="bg-light p-3 rounded-top-3">
         <div class="row text-center align-items-center">
             <div class="col-12 p-2">
-            @if (data?.estado === 1) {
+                @if (data?.estado === 1) {
                 <i class="fas fa-briefcase fs-3"></i>
-            } @else {
-                <i class="fas fa-ban fs-3"></i>    
-            }
+                } @else {
+                <i class="fas fa-ban fs-3"></i>
+                }
             </div>
             <div class="col-12 col-md-8 text-start">
                 <p class="fs-6 mb-0 fw-bold">Departamento Académico</p>
@@ -86,13 +86,15 @@
                 </div>
             </div>
 
-            @if (data?.documento) {
+            @if (data && data.documento) {
             <div class="col-12">
                 <div class="fw-bold">Documento</div>
-                <i class="fas fa-file-pdf text-danger"></i>
-                <a [href]="data?.documento?.url" target="_blank" class="doc-link">
-                    {{ data?.documento?.denominacion ?? 'Documento' }}
-                </a>
+                <span class="badge rounded-pill text-bg-light">
+                    <i class="fas fa-file-pdf text-danger"></i>
+                    <a class="doc-link" style="cursor: pointer;" (click)="openPdfModal(data.docenteLaboralId)">
+                        {{ data.documento.denominacion || 'Documento' }}
+                    </a>
+                </span>
             </div>
             }
         </div>
@@ -104,16 +106,17 @@
             Editar
         </button>
         }
-        <button class="btn" [ngClass]="esInactivo ? 'btn-info' : 'btn-secondary'"
-            (click)="onToggleEstado()" placement="top" [ngbTooltip]="data?.estado === 1 ? 'Dar de baja la Información' : 'Dar de alta la Información'">
+        <button class="btn" [ngClass]="esInactivo ? 'btn-info' : 'btn-secondary'" (click)="onToggleEstado()"
+            placement="top"
+            [ngbTooltip]="data?.estado === 1 ? 'Dar de baja la Información' : 'Dar de alta la Información'">
             @if (data?.estado === 1) {
             <i class="fas fa-arrow-circle-down"></i>
             } @else {
             <i class="fas fa-arrow-circle-up"></i>
             }
         </button>
-        <button class="btn btn-danger" placement="top" ngbTooltip="Eliminar Información"
-            (click)="onDelete()" aria-label="delete">
+        <button class="btn btn-danger" placement="top" ngbTooltip="Eliminar Información" (click)="onDelete()"
+            aria-label="delete">
             <i class="fas fa-trash-alt"></i>
         </button>
     </div>
