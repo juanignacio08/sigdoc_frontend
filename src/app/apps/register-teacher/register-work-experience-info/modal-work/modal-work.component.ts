@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,7 +7,11 @@ import {
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Docente } from '@shared/models/decanatura/docente.model';
-import { ExperienciaProfesional, ExperienciaProfesionalRequest } from '@shared/models/decanatura/docenteexperiencia.model';
+import {
+  ExperienciaProfesional,
+  ExperienciaProfesionalRequest,
+} from '@shared/models/decanatura/docenteexperiencia.model';
+import { TablaMaestraService } from 'app/services/maestros/tabla-maestra.service';
 
 @Component({
   selector: 'app-modal-work',
@@ -23,16 +27,23 @@ export class ModalWorkComponent implements OnInit {
 
   workExperienceForm!: FormGroup;
 
+  selectedFile?: File;
+  fileError: string | null = null;
+
+  masterTableService = inject(TablaMaestraService);
+
   constructor(
     private fb: FormBuilder,
     public activeModal: NgbActiveModal,
   ) {}
 
   ngOnInit(): void {
-    this.initForm();
+    if (this.action !== 'view' && this.action !== 'delete') {
+      this.initForm();
 
-    if (this.action === 'edit' && this.workExperience) {
-      this.setForm();
+      if (this.action === 'edit' && this.workExperience) {
+        this.setForm();
+      }
     }
   }
 
@@ -43,14 +54,11 @@ export class ModalWorkComponent implements OnInit {
       descripcion: [''],
       fechaInicio: [null],
       fechaFin: [null],
-      documento: [null],
       estado: [1],
     });
   }
 
   private setForm() {
-    console.log(this.workExperience);
-
     this.workExperienceForm
       .get('empresa')
       ?.setValue(this.workExperience?.empresa);
@@ -89,18 +97,40 @@ export class ModalWorkComponent implements OnInit {
     return !!(control && control.invalid && control.touched);
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.workExperienceForm.patchValue({
-        documento: file,
-      });
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) {
+      return;
     }
+
+    const file = input.files[0];
+
+    if (file.type !== 'application/pdf') {
+      this.fileError = 'Solo se permiten archivos PDF';
+      this.selectedFile = undefined;
+      input.value = '';
+      return;
+    }
+
+    const maxSize = 20 * 1024 * 1024; // 20MB
+
+    if (file.size > maxSize) {
+      this.fileError = 'El archivo no debe superar los 20 MB';
+      this.selectedFile = undefined;
+      input.value = '';
+      return;
+    }
+
+    this.fileError = null;
+    this.selectedFile = file;
   }
 
   submit() {
     if (this.workExperienceForm.valid && this.teacherActive) {
-      this.activeModal.close(this.fromFormToProfetionalExperiencie());
+      this.activeModal.close({
+        data: this.fromFormToProfetionalExperiencie(),
+        file: this.selectedFile,
+      });
 
       setTimeout(() => {
         (document.activeElement as HTMLElement)?.blur();
@@ -110,9 +140,23 @@ export class ModalWorkComponent implements OnInit {
     }
   }
 
+  confirmDelete() {
+    if (this.teacherActive && this.workExperience) {
+      this.activeModal.close({
+        data: this.workExperience,
+        file: undefined,
+      });
+
+      setTimeout(() => {
+        (document.activeElement as HTMLElement)?.blur();
+      });
+    }
+  }
+
   fromFormToProfetionalExperiencie(): ExperienciaProfesionalRequest {
     const workTeacher: ExperienciaProfesionalRequest = {
-      experienciaProfesionalId: this.workExperience?.experienciaProfesionalId || 1,
+      experienciaProfesionalId:
+        this.workExperience?.experienciaProfesionalId || 1,
       docenteId: this.teacherActive?.docenteId || 0,
       empresa: this.workExperienceForm.get('empresa')?.value,
       cargo: this.workExperienceForm.get('cargo')?.value,
@@ -123,6 +167,17 @@ export class ModalWorkComponent implements OnInit {
       fechaFin: this.emptyToUndefined(this.getDate('fechaFin')),
       estado: 1,
     };
+
+    if (this.selectedFile) {
+      workTeacher.documento = {
+        documentoId: this.workExperience?.documento?.documentoId || 1,
+        //denominacion: this.getDateAndTimeCurrent() + '_' + this.teacherActive?.nombre + '_' + this.teacherActive?.apellidoPaterno + '_grado_academico.pdf',
+        denominacion: this.selectedFile.name,
+        codTipoDocumento: this.masterTableService.COD_CERTIFICADO_DIPLOMA,
+        docenteId: this.teacherActive?.docenteId || 0,
+        estado: 1,
+      };
+    }
 
     return this.removeUndefined(workTeacher);
   }

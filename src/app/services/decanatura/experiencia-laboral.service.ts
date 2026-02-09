@@ -1,6 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ExperienciaProfesionalRequest, ExperienciaProfesionalResponse, ExperienciaProfesionalResponseListPaginated } from '@shared/models/decanatura/docenteexperiencia.model';
+import {
+  ExperienciaProfesionalRequest,
+  ExperienciaProfesionalResponse,
+  ExperienciaProfesionalResponseListPaginated,
+} from '@shared/models/decanatura/docenteexperiencia.model';
 import { environment } from 'environments/environment.development';
 import { Observable } from 'rxjs';
 
@@ -23,21 +27,52 @@ export class ExperienciaLaboralService {
     return this.http.get<ExperienciaProfesionalResponseListPaginated>(url);
   }
 
-  save(profetionalExperiencie: ExperienciaProfesionalRequest): Observable<ExperienciaProfesionalResponse> {
+  save(
+    profetionalExperiencie: ExperienciaProfesionalRequest,
+    file?: File,
+  ): Observable<ExperienciaProfesionalResponse> {
     const url = `${this.baseUrl}/save`;
-    return this.http.post<ExperienciaProfesionalResponse>(url, profetionalExperiencie);
+    const formData = new FormData();
+
+    formData.append(
+      'data',
+      new Blob([JSON.stringify(profetionalExperiencie)], { type: 'application/json' }),
+    );
+
+    if (file) {
+      formData.append('file', file);
+    }
+
+    return this.http.post<ExperienciaProfesionalResponse>(url, formData);
   }
 
   update(
     profetionalExperiencie: ExperienciaProfesionalRequest,
+    file?: File,
   ): Observable<ExperienciaProfesionalResponse> {
     const url = `${this.baseUrl}/update`;
-    return this.http.put<ExperienciaProfesionalResponse>(url, profetionalExperiencie);
-  }
+    const formData = new FormData();
 
-  delete(profetionalExperiencieId: number): Observable<ExperienciaProfesionalRequest> {
+    formData.append(
+      'data',
+      new Blob([JSON.stringify(profetionalExperiencie)], { type: 'application/json' }),
+    );
+
+    if (file) {
+      formData.append('file', file);
+    }
+
+    return this.http.put<ExperienciaProfesionalResponse>(url, formData);
+  }
+  
+  delete(
+    profetionalExperiencieId: number,
+  ): Observable<ExperienciaProfesionalRequest> {
     const url = `${this.baseUrl}/delete?id=${profetionalExperiencieId}`;
     return this.http.delete<ExperienciaProfesionalRequest>(url);
   }
 
+  getPdf(id: number) {
+    return this.http.get(`${this.baseUrl}/pdf/${id}`, { responseType: 'blob' });
+  }
 }

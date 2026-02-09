@@ -11,6 +11,7 @@ import { ModalWorkComponent } from './modal-work/modal-work.component';
 import { DocenteExperienciaLaboralCardComponent } from '@shared/components/docente-experiencia-laboral-card/docente-experiencia-laboral-card.component';
 import { ExperienciaLaboralService } from '../../../services/decanatura/experiencia-laboral.service';
 import { ToastrService } from 'ngx-toastr';
+import { ModalPdfViewerComponent } from '@shared/components/modal-pdf-viewer/modal-pdf-viewer.component';
 
 @Component({
   selector: 'app-register-work-experience-info',
@@ -104,15 +105,16 @@ export class RegisterWorkExperienceInfoComponent implements OnInit {
     // opcional: recibir resultado cuando se cierre
     modalRef.result.then(
       (result) => {
-        const experience: ExperienciaProfesionalRequest = result;
+        const { data, file } = result;
         switch (action) {
           case 'add':
-            this.addProfetionalExperiencie(experience);
+            this.addProfetionalExperiencie(data, file);
             break;
           case 'edit':
-            this.editProfetionalExperiencie(experience);
+            this.editProfetionalExperiencie(data, file);
             break;
           case 'delete':
+            this.delete(data.experienciaProfesionalId);
             break;
         }
       },
@@ -123,11 +125,10 @@ export class RegisterWorkExperienceInfoComponent implements OnInit {
     );
   }
 
-  addProfetionalExperiencie(profetionalExperiencie: ExperienciaProfesionalRequest) {
+  addProfetionalExperiencie(profetionalExperiencie: ExperienciaProfesionalRequest, file?: File) {
     this.loadingOperation = true;
-    this.profetionalExperiencieService.save(profetionalExperiencie).subscribe({
+    this.profetionalExperiencieService.save(profetionalExperiencie, file).subscribe({
       next: (response) => {
-        console.log(response.data);
         this.loadingOperation = false;
         this.showInfo('Experiencia profesional registrado con éxito!');
         this.loadProfetionalExperiencies(0, 10);
@@ -143,11 +144,10 @@ export class RegisterWorkExperienceInfoComponent implements OnInit {
     });
   }
 
-  editProfetionalExperiencie(profetionalExperiencie: ExperienciaProfesionalRequest) {
+  editProfetionalExperiencie(profetionalExperiencie: ExperienciaProfesionalRequest, file?: File) {
     this.loadingOperation = true;
-    this.profetionalExperiencieService.update(profetionalExperiencie).subscribe({
+    this.profetionalExperiencieService.update(profetionalExperiencie, file).subscribe({
       next: (response) => {
-        console.log(response.data);
         this.loadingOperation = false;
         this.showInfo('Experiencia Profesional editada!');
         this.loadProfetionalExperiencies(0, 10);
@@ -196,5 +196,16 @@ export class RegisterWorkExperienceInfoComponent implements OnInit {
         relativeTo: this.route,
       });
     }
+  }
+
+  openPdfModal(workExperiencieId: number) {
+    const modalRef = this.modalService.open(ModalPdfViewerComponent, {
+      size: 'xl',
+      centered: true,
+      backdrop: 'static',
+      scrollable: true,
+    });
+
+    modalRef.componentInstance.experienciaProfesionalId = workExperiencieId;
   }
 }

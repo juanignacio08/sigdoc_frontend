@@ -42,7 +42,7 @@
     @if (workExperienciesList.length > 0) {
     @for (item of workExperienciesList; track item.experienciaProfesionalId) {
     <div class="col-6">
-        <app-docente-experiencia-laboral-card [data]="item" (editar)="openModalWork('edit', 'Editar Experiencia Profesional', $event)" (delete)="delete($event.experienciaProfesionalId)"></app-docente-experiencia-laboral-card>
+        <app-docente-experiencia-laboral-card [data]="item" (editar)="openModalWork('edit', 'Editar Experiencia Profesional', $event)" (delete)="openModalWork('delete', 'Eliminar Experiencia Profesional', $event)" (viewPdf)="openPdfModal($event.experienciaProfesionalId)"></app-docente-experiencia-laboral-card>
     </div>
     }
     } @else {
