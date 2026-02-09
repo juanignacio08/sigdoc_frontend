@@ -29,6 +29,7 @@ export class ModalAcademicComponent implements OnInit {
 
   academicInfoForm!: FormGroup;
   selectedFile?: File;
+  fileError: string | null = null;
 
   academicGradeList: TablaMaestra[] = [];
 
@@ -231,9 +232,30 @@ export class ModalAcademicComponent implements OnInit {
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0];
+    if (!input.files || input.files.length === 0) {
+      return;
     }
+
+    const file = input.files[0];
+
+    if (file.type !== 'application/pdf') {
+      this.fileError = 'Solo se permiten archivos PDF';
+      this.selectedFile = undefined;
+      input.value = '';
+      return;
+    }
+
+    const maxSize = 20 * 1024 * 1024; // 20MB
+
+    if (file.size > maxSize) {
+      this.fileError = 'El archivo no debe superar los 20 MB';
+      this.selectedFile = undefined;
+      input.value = '';
+      return;
+    }
+
+    this.fileError = null;
+    this.selectedFile = file;
   }
 
   fromFormToAcademicTeacher(): DocenteAcademicoRequest {

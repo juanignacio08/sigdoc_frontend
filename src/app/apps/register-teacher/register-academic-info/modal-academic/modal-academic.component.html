@@ -114,6 +114,12 @@
 
                     </div>
                 </div>
+                
+                @if (fileError) {
+                <small class="text-danger">
+                    {{ fileError }}
+                </small>
+                }
                 <div class="col-12">
                     <!-- @if (teacherAcademic && teacherAcademic.documento) {
                         <p><span class="badge text-bg-info" (click)="openPdfModal(teacherAcademic.docenteAcademicoId)" style="cursor: pointer;">(<i class="far fa-file-pdf"></i> {{teacherAcademic.documento.denominacion}})</span></p>

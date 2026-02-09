@@ -48,9 +48,21 @@ export class DocentelaboralService {
 
   update(
     workTeacher: DocenteLaboralRequest,
+    file?: File,
   ): Observable<DocenteLaboralResponse> {
     const url = `${this.baseUrl}/update`;
-    return this.http.put<DocenteLaboralResponse>(url, workTeacher);
+    const formData = new FormData();
+
+    formData.append(
+      'data',
+      new Blob([JSON.stringify(workTeacher)], { type: 'application/json' }),
+    );
+
+    if (file) {
+      formData.append('file', file);
+    }
+
+    return this.http.put<DocenteLaboralResponse>(url, formData);
   }
 
   enabled(workTeacherId: number): Observable<DocenteLaboralResponse> {

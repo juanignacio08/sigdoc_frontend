@@ -46,7 +46,7 @@
             <div class="col-4 mb-3">
                 <app-docente-laboral-card [data]="item"
                     (editar)="openModalWork('edit', 'Editar Información Profesional', $event)"
-                    (toggleEstado)="toggleStatus($event)" (delete)="delete($event.docenteLaboralId)">
+                    (toggleEstado)="toggleStatus($event)" (delete)="openModalWork('delete', 'Eliminar Información Laboral', $event)">
                 </app-docente-laboral-card>
             </div>
             }

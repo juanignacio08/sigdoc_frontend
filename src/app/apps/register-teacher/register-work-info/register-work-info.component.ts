@@ -113,9 +113,10 @@ export class RegisterWorkInfoComponent implements OnInit {
             this.addWorkTeacher(data, file);
             break;
           case 'edit':
-            this.editWorkTeacher(data);
+            this.editWorkTeacher(data, file);
             break;
           case 'delete':
+            this.delete(data.docenteLaboralId);
             break;
         }
       },
@@ -145,11 +146,10 @@ export class RegisterWorkInfoComponent implements OnInit {
     });
   }
 
-  editWorkTeacher(workTeacher: DocenteLaboralRequest) {
+  editWorkTeacher(workTeacher: DocenteLaboralRequest, file?: File) {
     this.loadingOperation = true;
-    this.workTeacherService.update(workTeacher).subscribe({
+    this.workTeacherService.update(workTeacher, file).subscribe({
       next: (response) => {
-        console.log(response.data);
         this.loadingOperation = false;
         this.showInfo('Información laboral editada!');
         this.loadWorkTeacher(0, 10);

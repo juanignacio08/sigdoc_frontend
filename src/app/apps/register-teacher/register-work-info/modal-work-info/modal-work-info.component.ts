@@ -332,8 +332,6 @@ export class ModalWorkInfoComponent implements OnInit {
       setTimeout(() => {
         (document.activeElement as HTMLElement)?.blur();
       });
-    } else {
-      console.log('no entro');
     }
   }
 
