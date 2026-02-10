@@ -15,14 +15,35 @@ export class DocenteService {
   
   private readonly baseUrl = environment.apiUrl + "/teacher";
 
-  save(teacher : DocenteRequest): Observable<DocenteResponse> {
+  save(teacher : DocenteRequest, file ?: File): Observable<DocenteResponse> {
     const url = `${this.baseUrl}/save`;
-    return this.http.post<DocenteResponse>(url, teacher);
+    const formData = new FormData();
+
+    formData.append(
+      'data',
+      new Blob([JSON.stringify(teacher)], { type: 'application/json' }),
+    );
+
+    if (file) {
+      formData.append('file', file);
+    }
+    
+    return this.http.post<DocenteResponse>(url, formData);
   }
 
-  update(teacher : DocenteRequest): Observable<DocenteResponse> {
+  update(teacher : DocenteRequest, file ?: File): Observable<DocenteResponse> {
     const url = `${this.baseUrl}/update`;
-    return this.http.put<DocenteResponse>(url, teacher);
+    const formData = new FormData();
+
+    formData.append(
+      'data',
+      new Blob([JSON.stringify(teacher)], { type: 'application/json' }),
+    );
+
+    if (file) {
+      formData.append('file', file);
+    }
+    return this.http.put<DocenteResponse>(url, formData);
   }
 
   getDetail(documentNumber : string): Observable<DocenteResponse> {
@@ -38,5 +59,9 @@ export class DocenteService {
   getAllByFilters(filter: DocenteFilter, page: number, size: number): Observable<DocenteResponseListPaginated> {
     const url = `${this.baseUrl}/getAllByFilters?page=${page}&size=${size}`;
     return this.http.post<DocenteResponseListPaginated>(url, filter);
+  }
+
+  getImagen(id: number) {
+    return this.http.get(`${this.baseUrl}/imagen/${id}`, { responseType: 'blob' });
   }
 }

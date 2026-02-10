@@ -1,13 +1,22 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  inject,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { ModalInformationComponent } from '@shared/components/modal-information/modal-information.component';
+import { ModalPdfViewerComponent } from '@shared/components/modal-pdf-viewer/modal-pdf-viewer.component';
 import {
   Docente,
   DocenteRequest,
@@ -27,7 +36,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './register-personal-data.component.scss',
 })
 export class RegisterPersonalDataComponent implements OnInit {
-
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @Output() nextStep = new EventEmitter<void>();
 
   teacherActive?: Docente | null;
@@ -70,6 +79,9 @@ export class RegisterPersonalDataComponent implements OnInit {
   errorSearchTeacher: boolean = false;
   errorSaveTeacher: boolean = false;
 
+  selectedFile?: File;
+  fileError: string | null = null;
+
   masterTableService = inject(TablaMaestraService);
   ubigeoService = inject(UbigeoService);
   docenteService = inject(DocenteService);
@@ -86,7 +98,7 @@ export class RegisterPersonalDataComponent implements OnInit {
   ngOnInit(): void {
     this.teacherActive =
       this.sessionStorageService.get<Docente>('teacherActive');
-    
+
     this.initForm();
 
     if (this.teacherActive) {
@@ -404,20 +416,32 @@ export class RegisterPersonalDataComponent implements OnInit {
     }
   }
 
+  resetPhotoInput() {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+
+    this.selectedFile = undefined;
+    this.fileError = '';
+  }
+
   updateTeacher() {
-    if (this.personalForm.valid && this.personalForm.dirty) {
+    if (
+      (this.personalForm.valid && this.personalForm.dirty) ||
+      this.selectedFile
+    ) {
       this.loadingSaveTeacher = true;
       this.errorSaveTeacher = false;
       let teacher: DocenteRequest = this.frompersonalFormToDocenteRequest();
-      console.log(teacher);
 
-      this.docenteService.update(teacher).subscribe({
+      this.docenteService.update(teacher, this.selectedFile).subscribe({
         next: (response) => {
           this.loadingSaveTeacher = false;
           this.showInfo(`Datos editados correctamente.`);
           this.sessionStorageService.set('teacherActive', response.data);
           this.teacherActive = response.data;
           this.personalForm.markAsPristine();
+          this.resetPhotoInput();
           this.openModalInformative();
         },
         error: (error) => {
@@ -441,13 +465,16 @@ export class RegisterPersonalDataComponent implements OnInit {
       return;
     }
 
-    if (this.personalForm.valid && this.personalForm.dirty) {
+    if (
+      (this.personalForm.valid && this.personalForm.dirty) ||
+      this.selectedFile
+    ) {
       this.loadingSaveTeacher = true;
       this.errorSaveTeacher = false;
       let teacher: DocenteRequest = this.frompersonalFormToDocenteRequest();
       console.log(teacher);
 
-      this.docenteService.save(teacher).subscribe({
+      this.docenteService.save(teacher, this.selectedFile).subscribe({
         next: (response) => {
           this.loadingSaveTeacher = false;
           this.showInfo(
@@ -456,6 +483,7 @@ export class RegisterPersonalDataComponent implements OnInit {
           this.sessionStorageService.set('teacherActive', response.data);
           this.teacherActive = response.data;
           this.personalForm.markAsPristine();
+          this.resetPhotoInput();
           this.openModalInformative();
           //this.goToNextStep();
         },
@@ -580,12 +608,13 @@ export class RegisterPersonalDataComponent implements OnInit {
       telefono: this.emptyToUndefined(
         this.personalForm.get('cellphone')?.value,
       ),
-      fotografia: this.emptyToUndefined(
-        this.personalForm.get('photograph')?.value,
-      ),
 
       estado: 1,
     };
+
+    if (this.selectedFile) {
+      teacher.fotografia = this.selectedFile.name;
+    }
 
     return this.removeUndefined(teacher);
   }
@@ -615,8 +644,6 @@ export class RegisterPersonalDataComponent implements OnInit {
 
       gender: [null],
       maritalStatus: [null],
-
-      photograph: [''],
 
       regionActual: [null],
       provinciaActual: [null],
@@ -688,7 +715,9 @@ export class RegisterPersonalDataComponent implements OnInit {
       this.ubigeoProcedencia =
         teacher.codUbigeoProcedencia.codigoUbigeo || undefined;
 
-      this.personalForm.markAsPristine(); 
+      this.resetPhotoInput();
+
+      this.personalForm.markAsPristine();
     }
   }
 
@@ -833,5 +862,44 @@ export class RegisterPersonalDataComponent implements OnInit {
         // dismissed (esc o backdrop)
       },
     );
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) {
+      return;
+    }
+
+    const file = input.files[0];
+
+    if (!file.type.startsWith('image/')) {
+      this.fileError = 'Solo se permiten archivos de imagen';
+      this.selectedFile = undefined;
+      input.value = '';
+      return;
+    }
+
+    const maxSize = 20 * 1024 * 1024; // 20MB
+
+    if (file.size > maxSize) {
+      this.fileError = 'El archivo no debe superar los 20 MB';
+      this.selectedFile = undefined;
+      input.value = '';
+      return;
+    }
+
+    this.fileError = null;
+    this.selectedFile = file;
+  }
+
+  openImageModal(teacherId: number) {
+    const modalRef = this.modalService.open(ModalPdfViewerComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: 'static',
+      scrollable: true,
+    });
+
+    modalRef.componentInstance.teacherId = teacherId;
   }
 }

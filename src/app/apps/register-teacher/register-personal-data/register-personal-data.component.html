@@ -161,8 +161,20 @@
 
             <div class="col-12">
                 <div class="form-group">
-                    <label for="photograph">Fotografia</label>
-                    <input type="file" id="photograph" class="form-control" formControlName="photograph">
+                    <label>Fotografia
+                        @if (teacherActive?.fotografia) {
+                        <small class="text-primary fw-bold" (click)="openImageModal(teacherActive?.docenteId || 0)" style="cursor: pointer;">
+                            ({{ teacherActive?.fotografia}}) Ver Imagen
+                        </small>
+                        }
+                        @if (fileError) {
+                        <small class="text-danger">
+                            {{ fileError }}
+                        </small>
+                        }
+                    </label>
+                    <input type="file" #fileInput id="photograph" class="form-control" accept="image/*"
+                        (change)="onFileSelected($event)">
                 </div>
             </div>
 
@@ -311,8 +323,9 @@
             </div>
             <div class="col-12 col-md-4 text-center">
                 @if (loadingSaveTeacher) {
-                <button type="submit" class="btn btn-primary btn-progress me-3" placement="top" ngbTooltip="Guardando..."
-                    [disabled]="loadingSaveTeacher"><i class="fas fa-save"></i> Guardar</button>
+                <button type="submit" class="btn btn-primary btn-progress me-3" placement="top"
+                    ngbTooltip="Guardando..." [disabled]="loadingSaveTeacher"><i class="fas fa-save"></i>
+                    Guardar</button>
                 }@else {
                 <button type="submit" class="btn btn-primary btn-icon icon-left me-3" placement="top"
                     ngbTooltip="Guardar Información" [disabled]="!personalForm.valid"><i class="fas fa-save"></i>
@@ -324,7 +337,8 @@
             </div>
             <div class="col-12 col-md-4 text-end">
                 <button type="button" class="btn btn-info btn-icon icon-left" placement="top"
-                    ngbTooltip="Avanzar al siguiente formulario" (click)="goToNextStep()" [disabled]="!teacherActive"><i class="fas fa-arrow-alt-circle-right"></i>
+                    ngbTooltip="Avanzar al siguiente formulario" (click)="goToNextStep()" [disabled]="!teacherActive"><i
+                        class="fas fa-arrow-alt-circle-right"></i>
                     Siguiente</button>
             </div>
         </div>
