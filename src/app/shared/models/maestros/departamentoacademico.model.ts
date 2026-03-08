@@ -6,6 +6,8 @@ export interface DepartamentoAcademico {
     denominacion: string,
     abreviatura: string,
     facultad: Facultad,
+    color: string,
+    imagen: string,
     estado: number
 }
 

@@ -12,9 +12,11 @@ import {
   DocenteLaboralRequest,
 } from '@shared/models/decanatura/docentelaboral.model';
 import { DepartamentoAcademico } from '@shared/models/maestros/departamentoacademico.model';
+import { EscuelaProfesional } from '@shared/models/maestros/escuelaprofesional.model';
 import { Facultad } from '@shared/models/maestros/facultad.model';
 import { TablaMaestra } from '@shared/models/maestros/tablamaestra.model';
 import { DepartamentoacademicoService } from 'app/services/maestros/departamentoacademico.service';
+import { EscuelaprofesionalService } from 'app/services/maestros/escuelaprofesional.service';
 import { FacultadService } from 'app/services/maestros/facultad.service';
 import { TablaMaestraService } from 'app/services/maestros/tabla-maestra.service';
 
@@ -34,6 +36,7 @@ export class ModalWorkInfoComponent implements OnInit {
 
   facultyList: Facultad[] = [];
   academicDepartmentList: DepartamentoAcademico[] = [];
+  professionalSchoolList: EscuelaProfesional[] = [];
   workRegimeList: TablaMaestra[] = [];
   teacherCategoryList: TablaMaestra[] = [];
   teacherLevelList: TablaMaestra[] = [];
@@ -45,6 +48,7 @@ export class ModalWorkInfoComponent implements OnInit {
   controls = {
     faculty: { loading: false, error: false },
     academicDepartment: { loading: false, error: false },
+    professionalSchool: { loading: false, error: false},
     workRegime: { loading: false, error: false },
     teacherCategory: { loading: false, error: false },
     teacherLevel: { loading: false, error: false },
@@ -54,6 +58,7 @@ export class ModalWorkInfoComponent implements OnInit {
   masterTableService = inject(TablaMaestraService);
   academicDepartmentService = inject(DepartamentoacademicoService);
   facultyService = inject(FacultadService);
+  professionalSchoolService = inject(EscuelaprofesionalService);
 
   constructor(
     private fb: FormBuilder,
@@ -96,6 +101,14 @@ export class ModalWorkInfoComponent implements OnInit {
         }
       });
 
+      this.workInfoForm.get('departamentoId')?.valueChanges.subscribe((value) => {
+        this.professionalSchoolList = [];
+        this.workInfoForm.get('escuelaId')?.setValue(null);
+        if (value != null && value !== '') {
+          this.onProfessionalSchoolChange(value);
+        }
+      });
+
       if (this.action === 'edit' && this.teacherWork) {
         this.setForm();
       }
@@ -106,6 +119,7 @@ export class ModalWorkInfoComponent implements OnInit {
     this.workInfoForm = this.fb.group({
       facultadId: [null, Validators.required],
       departamentoId: [null, Validators.required],
+      escuelaId: [null, Validators.required],
       codigoInstitucional: ['', Validators.required],
       emailInstitucional: [
         this.teacherActive?.emailInstitucional,
@@ -170,6 +184,10 @@ export class ModalWorkInfoComponent implements OnInit {
     this.loadAcademicDepartment(facultyId);
   }
 
+  onProfessionalSchoolChange(departamentoId: number) {
+    this.loadProfessionalSchool(departamentoId);
+  }
+
   loadFaculty() {
     this.controls.faculty.loading = true;
     this.controls.faculty.error = false;
@@ -193,8 +211,6 @@ export class ModalWorkInfoComponent implements OnInit {
   }
 
   loadAcademicDepartment(facultyId: number) {
-    console.log('ejecutando');
-
     this.controls.academicDepartment.loading = true;
     this.controls.academicDepartment.error = false;
     this.workInfoForm.get('departamentoId')?.disable();
@@ -225,6 +241,39 @@ export class ModalWorkInfoComponent implements OnInit {
     const facultyId = this.workInfoForm.get('facultadId')?.value;
     if (facultyId !== null) {
       this.loadAcademicDepartment(facultyId);
+    }
+  }
+
+  loadProfessionalSchool(departamentoId: number) {
+    this.controls.professionalSchool.loading = true;
+    this.controls.professionalSchool.error = false;
+    this.workInfoForm.get('escuelaId')?.disable();
+
+    this.professionalSchoolService.getByAcademicApartment(departamentoId).subscribe({
+      next: (response) => {
+        this.professionalSchoolList = response.data;
+        
+        this.controls.professionalSchool.loading = false;
+        if (this.teacherWork) {
+          this.workInfoForm
+            .get('escuelaId')
+            ?.setValue(
+              this.teacherWork.escuelaProfesional.escuelaProfesionalId,
+            );
+        }
+        this.workInfoForm.get('escuelaId')?.enable();
+      },
+      error: (error) => {
+        this.controls.professionalSchool.loading = false;
+        this.controls.professionalSchool.error = true;
+      },
+    });
+  }
+
+  retryProfessionalSchool() {
+    const academicApartmentId = this.workInfoForm.get('departamentoId')?.value;
+    if (academicApartmentId !== null) {
+      this.loadProfessionalSchool(academicApartmentId);
     }
   }
 
@@ -393,6 +442,7 @@ export class ModalWorkInfoComponent implements OnInit {
       docenteLaboralId: this.teacherWork?.docenteLaboralId || 1,
       docenteId: this.teacherActive?.docenteId || 0,
       departamentoId: this.workInfoForm.get('departamentoId')?.value,
+      escuelaId: this.workInfoForm.get('escuelaId')?.value,
       codigoInstitucional: this.emptyToUndefined(
         this.workInfoForm.get('codigoInstitucional')?.value,
       ),

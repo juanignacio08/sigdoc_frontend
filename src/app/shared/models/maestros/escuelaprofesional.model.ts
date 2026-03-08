@@ -6,6 +6,8 @@ export interface EscuelaProfesional {
     denominacion: string,
     abreviatura: string,
     departamentoAcademico: DepartamentoAcademico,
+    color: string,
+    imagen: string,
     estado: number
 }
 

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { EscuelaProfesionalResponse } from '@shared/models/maestros/escuelaprofesional.model';
+import { EscuelaProfesionalListResponse } from '@shared/models/maestros/escuelaprofesional.model';
 import { environment } from 'environments/environment.development';
 import { Observable } from 'rxjs';
 
@@ -16,8 +16,8 @@ export class EscuelaprofesionalService {
 
   getByAcademicApartment(
     academicApartmentId: number,
-  ): Observable<EscuelaProfesionalResponse> {
+  ): Observable<EscuelaProfesionalListResponse> {
     const url = `${this.baseUrl}/getByAcademicApartment?academicApartmentId=${academicApartmentId}`;
-    return this.http.get<EscuelaProfesionalResponse>(url);
+    return this.http.get<EscuelaProfesionalListResponse>(url);
   }
 }
