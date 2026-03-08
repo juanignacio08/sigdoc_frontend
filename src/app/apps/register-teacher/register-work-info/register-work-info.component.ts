@@ -49,7 +49,7 @@ export class RegisterWorkInfoComponent implements OnInit {
       return;
     }
 
-    this.loadWorkTeacher(0, 10);
+    this.loadWorkTeacher(0, 1000);
   }
 
   loadWorkTeacher(page: number, size: number) {
@@ -133,7 +133,7 @@ export class RegisterWorkInfoComponent implements OnInit {
       next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Información laboral registrado con éxito!');
-        this.loadWorkTeacher(0, 10);
+        this.loadWorkTeacher(0, 1000);
       },
       error: (err) => {
         this.loadingOperation = false;
@@ -152,7 +152,7 @@ export class RegisterWorkInfoComponent implements OnInit {
       next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Información laboral editada!');
-        this.loadWorkTeacher(0, 10);
+        this.loadWorkTeacher(0, 1000);
       },
       error: (err) => {
         this.loadingOperation = false;
@@ -171,7 +171,7 @@ export class RegisterWorkInfoComponent implements OnInit {
       next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Información laboral inactiva!');
-        this.loadWorkTeacher(0, 10);
+        this.loadWorkTeacher(0, 1000);
       },
       error: (err) => {
         this.loadingOperation = false;
@@ -190,7 +190,7 @@ export class RegisterWorkInfoComponent implements OnInit {
       next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Información laboral activa!');
-        this.loadWorkTeacher(0, 10);
+        this.loadWorkTeacher(0, 1000);
       },
       error: (err) => {
         this.loadingOperation = false;
@@ -209,7 +209,7 @@ export class RegisterWorkInfoComponent implements OnInit {
       next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Información laboral eliminada.');
-        this.loadWorkTeacher(0, 10);
+        this.loadWorkTeacher(0, 1000);
       },
       error: (err) => {
         this.loadingOperation = false;

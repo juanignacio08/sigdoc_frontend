@@ -215,4 +215,9 @@ export class RegisterAcademicInfoComponent implements OnInit {
     modalRef.componentInstance.docenteAcademicoId = teacherAcademicId;
   }
 
+  onPage(event: any) {
+    this.pageNumber = event.offset;
+    this.loadAcademicsGrades(this.pageNumber, this.pageSize);
+  }
+
 }

@@ -2,6 +2,7 @@ import { PaginatedResponseDTO } from "../base/paginateddto.model";
 import { ResponseDTO } from "../base/responsedto.model";
 import { TablaMaestra } from "../maestros/tablamaestra.model";
 import { Ubigeo } from "../maestros/ubigeo.model";
+import { DocenteAcademico } from "./docenteacademico.model";
 
 export interface Docente {
     docenteId: number,
@@ -20,7 +21,10 @@ export interface Docente {
     codEstadoCivil: TablaMaestra,
     telefono: string,
     fotografia: string,
-    estado: number
+    urlFotografia: string,
+    estado: number,
+
+    infoAcademica? : DocenteAcademico[]
 }
 
 export interface DocenteRequest {

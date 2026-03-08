@@ -1,0 +1,34 @@
+<div class="card-header px-1">
+        <div class="row px-1">
+            <div class="col-8">
+                <h2 class="fs-5 fw-bold">{{profession?.codGradoAcademico?.abreviatura}}. {{ teacher.nombre + ' ' + teacher.apellidoPaterno + ' ' +
+                    teacher.apellidoMaterno }}
+                </h2>
+            </div>
+            <div class="col-4 text-end p-0">
+                @if (teacher.estado == 1) {
+                    <div class="badge-outline col-indigo fs-5 fw-bold border-2">Activo</div>
+                } @else {
+                    <div class="badge-outline col-red fs-5 fw-bold">Inactivo</div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-3">
+        <div class="row">
+            <div class="col-12 mb-3">
+                <img [src]="teacher.urlFotografia" class="img-thumbnail card-img-top" alt="imagen" />
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-8 col-lg-9 px-3 mb-3">
+                <p class="fw-bold">{{profession?.tituloProfesional}}</p>
+                <p class="fw-bold">DNI: <span class="fw-normal">{{ teacher.numDocumento }}</span></p>
+                <p class="fw-bold">Email: <span class="fw-normal">{{ teacher.emailInstitucional }}</span></p>
+                <p class="fw-bold">Celular: <span class="fw-normal">{{ teacher.telefono }}</span></p>
+            </div>
+
+            <div class="col-12">
+
+            </div>
+        </div>
+    </div>

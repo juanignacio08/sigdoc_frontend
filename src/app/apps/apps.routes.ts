@@ -21,6 +21,10 @@ export const APPS_ROUTE: Route[] = [
     component: SearchTeacherComponent,
   },
   {
+    path: 'teacher-profile/:documentNumber',
+    loadComponent: () => import('./profile-teacher/profile-teacher.component').then(m => m.ProfileTeacherComponent),
+  },
+  {
     path: 'register-teacher',
     component: RegisterTeacherComponent,
     children: [

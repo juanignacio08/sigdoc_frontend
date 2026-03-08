@@ -10,10 +10,12 @@
     </div>
 
     <div class="d-flex justify-content-end gap-2 mb-3">
+        @if (data?.documento) {
         <button class="btn btn-icon btn-success" aria-label="descargarPdf" placement="top" ngbTooltip="Ver PDF"
             (click)="onViewPDF()">
             <i class="fas fa-file-pdf"></i>
         </button>
+        }
         <button class="btn btn-icon btn-secondary" aria-label="editar" placement="top" ngbTooltip="Editar Información"
             (click)="onEditar()">
             <i class="fas fa-edit"></i>

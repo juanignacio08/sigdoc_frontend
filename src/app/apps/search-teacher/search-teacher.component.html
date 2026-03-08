@@ -73,7 +73,7 @@
 
               <ngx-datatable-column name="Docente" [width]="350">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                  <img src="{{ row.img }}" class="data-table-img" alt="imagen-perfil" />
+                  <img [src]="row.urlFotografia" class="data-table-img" alt="imagen-perfil" />
                   <div class="name-col-style">
                     <div>{{row.nombre}} {{row.apellidoPaterno}} {{row.apellidoMaterno}}</div>
                   </div>
@@ -114,11 +114,11 @@
               <ngx-datatable-column name="Actions" [sortable]="false">
                 <ng-template let-value="value" let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
                   <button class="btn btn-icon btn-info btn-sm me-1" placement="top" ngbTooltip="Ver Información"
-                    aria-label="Ver Informacion">
+                    aria-label="Ver Informacion" (click)="goToProfile(row)">
                     <i class="fas fa-file-alt"></i>
                   </button>
                   <button class="btn btn-icon btn-danger btn-sm" placement="top" ngbTooltip="Eliminar Información"
-                    aria-label="eliminar">
+                    aria-label="eliminar" (click)="deleteRecord(row)">
                     <i class="far fa-trash-alt"></i>
                   </button>
                 </ng-template>

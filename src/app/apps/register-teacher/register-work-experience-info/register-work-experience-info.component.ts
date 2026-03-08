@@ -49,7 +49,7 @@ export class RegisterWorkExperienceInfoComponent implements OnInit {
       return;
     }
 
-    this.loadProfetionalExperiencies(0, 10);
+    this.loadProfetionalExperiencies(0, 1000);
   }
 
   loadProfetionalExperiencies(page: number, size: number) {
@@ -131,7 +131,7 @@ export class RegisterWorkExperienceInfoComponent implements OnInit {
       next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Experiencia profesional registrado con éxito!');
-        this.loadProfetionalExperiencies(0, 10);
+        this.loadProfetionalExperiencies(0, 1000);
       },
       error: (err) => {
         this.loadingOperation = false;
@@ -150,7 +150,7 @@ export class RegisterWorkExperienceInfoComponent implements OnInit {
       next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Experiencia Profesional editada!');
-        this.loadProfetionalExperiencies(0, 10);
+        this.loadProfetionalExperiencies(0, 1000);
       },
       error: (err) => {
         this.loadingOperation = false;
@@ -169,7 +169,7 @@ export class RegisterWorkExperienceInfoComponent implements OnInit {
       next: (response) => {
         this.loadingOperation = false;
         this.showInfo('Experiencia Profesional eliminada.');
-        this.loadProfetionalExperiencies(0, 10);
+        this.loadProfetionalExperiencies(0, 1000);
       },
       error: (err) => {
         this.loadingOperation = false;

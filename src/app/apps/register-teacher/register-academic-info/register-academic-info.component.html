@@ -41,8 +41,8 @@
     <div class="col-12">
         @if (academicGradeList.length > 0) {
         <ngx-datatable #table class="material" [rows]="academicGradeList" [loadingIndicator]="loadingIndicator"
-            columnMode="force" [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="10"
-            [scrollbarH]="scrollBarHorizontal" [reorderable]="reorderable">
+            columnMode="force" [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="pageSize" [count]="totalItems" [offset]="pageNumber" [externalPaging]="true"
+            [scrollbarH]="scrollBarHorizontal" [reorderable]="reorderable" (page)="onPage($event)">
             <ngx-datatable-column name="Grado Académico">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     {{row.codGradoAcademico.denominacion}}

@@ -28,7 +28,11 @@
 } @else {
 <div class="row align-items-center mb-0">
     <div class="col-8">
-        <p class="fw-bold fs-6 m-0">Experiencia Profesional</p>
+        <p class="fw-bold fs-6 m-0">Experiencia Profesional
+            @if (workExperienciesList.length > 0) {
+            <span class="badge bg-secondary">Total: {{ workExperienciesList.length }}</span>
+            }
+        </p>
     </div>
     <div class="col-4 text-end">
         <button class="btn btn-icon icon-left btn-primary m-0"

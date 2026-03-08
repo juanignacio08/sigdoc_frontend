@@ -1,0 +1,7 @@
+/* Tu CSS */
+.card-img-top {
+  width: 100%;       /* Ocupa todo el ancho de la card */
+  height: 200px;      /* ALTURA FIJA: Aquí defines la uniformidad */
+  object-fit: scale-down;  /* MAGIA: Recorta la imagen para que llene el espacio sin deformarse */
+  object-position: center; /* Centra el recorte */
+}
