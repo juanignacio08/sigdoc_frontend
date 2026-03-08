@@ -6,10 +6,26 @@ import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
 import { Dashboard } from '../../shared/models/maestros/dashboard.model';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
+import { CommonModule } from '@angular/common';
+import {
+  Color,
+  ScaleType,
+  BarChartModule,
+  LineChartModule,
+  AreaChartModule,
+  PieChartModule,
+  LegendPosition,
+} from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-main',
-  imports: [NgbProgressbar, NgxEchartsDirective, LoadingComponent],
+  imports: [
+    NgbProgressbar,
+    NgxEchartsDirective,
+    LoadingComponent,
+    CommonModule,
+    BarChartModule,
+  ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
   providers: [provideEcharts()],
@@ -20,6 +36,31 @@ export class MainComponent implements OnInit {
   controls = {
     general: { loading: false, error: false },
   };
+
+  colorScheme: Color = {
+    domain: ['#9370DB'],
+    group: ScaleType.Ordinal,
+    selectable: true,
+    name: 'Customer Usage',
+  };
+
+  showXAxis = true;
+  showYAxis = true;
+  gradient = false;
+  showLegend = true;
+  showXAxisLabel = true;
+  showYAxisLabel = true;
+  public legendPosition: LegendPosition = LegendPosition.Right;
+  // vaericle bar chart start
+  vbarxAxisLabel = 'Departamentos Académicos';
+  vbaryAxisLabel = 'Docentes';
+
+  public single = [
+    {
+      name: 'D.A.',
+      value: 0,
+    },
+  ];
 
   dashboardService = inject(DashboardService);
 
@@ -35,6 +76,7 @@ export class MainComponent implements OnInit {
       next: (response) => {
         this.dashBoard = response.data;
         this.updatePieChart(); // <--- Nueva función para mapear los datos
+        this.updateBarChart();
         this.controls.general.loading = false;
       },
       error: (err) => {
@@ -72,13 +114,28 @@ export class MainComponent implements OnInit {
     this.pie_chart = {
       ...this.pie_chart,
       legend: {
-        ...(this.pie_chart.legend), // Casting a any para evitar el error de undefined
+        ...this.pie_chart.legend, // Casting a any para evitar el error de undefined
         data: legendNames,
         top: '5%',
       },
       series: [pieSeries], // Pasamos el array directamente
       color: colors,
     };
+  }
+
+  updateBarChart() {
+    if (!this.dashBoard?.academicApartmentList) return;
+  
+    const apartmentData = this.dashBoard.academicApartmentList;
+    const seriesData = apartmentData.map((item) => ({
+      name: item.denomination,
+      value: item.value,
+    }));
+    const colors = apartmentData.map((item) => item.color);
+
+    this.colorScheme.domain = colors;
+    this.single = seriesData;
+    
   }
 
   showError(message: string) {

@@ -1,7 +1,7 @@
 <section class="main-content">
   <div class="min-vh-100">
     <div class="row pt-4">
-      <h2 class="fs-3">Dashboard</h2>
+      <h2 class="fs-3 text-main">Dashboard</h2>
       @if (controls.general.loading) {
       <app-loading></app-loading>
       } @else {
@@ -35,15 +35,17 @@
             <div echarts [options]="pie_chart" class="echart-height"></div>
             } @else {
             <div class="text-center p-5">
-              <img src="/assets/images/banner/nodata.png" alt="Sin datos" width="100">
-              <p class="text-muted mt-2">No hay docentes registrados para generar estadísticas.</p>
+              <img src="/assets/images/banner/nodata.png" alt="Sin datos" width="100" />
+              <p class="text-muted mt-2">
+                No hay docentes registrados para generar estadísticas.
+              </p>
             </div>
             }
           </div>
         </div>
       </div>
 
-      <h3 class="fs-3 mt-3">
+      <h3 class="fs-3 mt-3 text-main">
         Departamentos Académicos
         <span class="badge text-bg-info">Total: {{ dashBoard?.totalTeacherInAcademicApartment }} |
           {{ dashBoard?.teacherInAcademicApartmentPercent }} %</span>
@@ -56,18 +58,30 @@
             <div class="row align-items-center justify-content-between">
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 left-grid-spacing">
                 <div class="card-content">
-                  <h6>{{ da.denomination }}</h6>
-                  <h2 class="mb-3 font-20 p-2">{{ da.value }}</h2>
+                  <h6 [ngStyle]="{ color: da.color }">
+                    {{ da.denomination }}
+                  </h6>
+                  <h2 class="mb-3 font-20 p-2 text-main">{{ da.value }}</h2>
                   <p class="mb-0">
-                    <span class="text-info">Docentes: {{ da.percent }} %</span>
+                    <span [ngStyle]="{ color: da.color }">{{ da.percent }} %</span>
                   </p>
                 </div>
-                <ngb-progressbar type="info" [value]="da.percent" height=".4rem"></ngb-progressbar>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 right-grid-spacing">
                 <div class="banner-img">
-                  <img class="img-fluid" src="/assets/images/banner/{{da.image}}" alt="" />
+                  <img class="img-fluid" src="/assets/images/banner/{{ da.image }}" alt="" />
                 </div>
+              </div>
+              <div class="col-12 mt-3">
+                <ngb-progressbar [type]="
+                        da.percent < 10
+                          ? 'danger'
+                          : da.percent < 20
+                            ? 'warning'
+                            : da.percent < 30
+                              ? 'info'
+                              : 'success'
+                      " [value]="da.percent" height=".4rem"></ngb-progressbar>
               </div>
             </div>
           </div>
@@ -75,7 +89,31 @@
       </div>
       }
 
-      <h3 class="fs-3 mt-3">
+      @if (dashBoard?.totalTeacher && dashBoard!.totalTeacher > 0) {
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+          <div class="card-body">
+            <div style="height: 400px">
+              <ngx-charts-bar-vertical [scheme]="colorScheme" [results]="single" [gradient]="gradient"
+                [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [legendPosition]="legendPosition"
+                [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="vbarxAxisLabel"
+                [yAxisLabel]="vbaryAxisLabel">
+              </ngx-charts-bar-vertical>
+            </div>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <div class="text-center p-5">
+        <img src="/assets/images/banner/nodata.png" alt="Sin datos" width="100" />
+        <p class="text-muted mt-2">
+          No hay docentes registrados para generar estadísticas.
+        </p>
+      </div>
+      }
+      
+
+      <h3 class="fs-3 mt-3 text-main">
         Escuelas Profesionales
         <span class="badge text-bg-info">Total: {{ dashBoard?.totalTeacherInProfessionalSchool }} |
           {{ dashBoard?.teacherInProfessionalSchoolPercent }} %</span>
@@ -88,18 +126,30 @@
             <div class="row align-items-center justify-content-between">
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 left-grid-spacing">
                 <div class="card-content">
-                  <h6>{{ ep.denomination }}</h6>
-                  <h2 class="mb-3 font-20 p-2">{{ ep.value }}</h2>
+                  <h6 [ngStyle]="{ color: ep.color }">
+                    {{ ep.denomination }}
+                  </h6>
+                  <h2 class="mb-3 font-20 p-2 text-main">{{ ep.value }}</h2>
                   <p class="mb-0">
-                    <span class="text-info">Docentes: {{ ep.percent }} %</span>
+                    <span [ngStyle]="{ color: ep.color }">{{ ep.percent }} %</span>
                   </p>
                 </div>
-                <ngb-progressbar type="info" [value]="ep.percent" height=".4rem"></ngb-progressbar>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 right-grid-spacing">
                 <div class="banner-img">
-                  <img class="img-fluid" src="/assets/images/banner/{{ep.image}}" alt="" />
+                  <img class="img-fluid" src="/assets/images/banner/{{ ep.image }}" alt="" />
                 </div>
+              </div>
+              <div class="col-12 mt-3">
+                <ngb-progressbar [type]="
+                        ep.percent < 10
+                          ? 'danger'
+                          : ep.percent < 20
+                            ? 'warning'
+                            : ep.percent < 30
+                              ? 'info'
+                              : 'success'
+                      " [value]="ep.percent" height=".4rem"></ngb-progressbar>
               </div>
             </div>
           </div>
