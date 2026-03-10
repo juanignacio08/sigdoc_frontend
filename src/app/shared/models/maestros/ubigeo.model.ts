@@ -1,14 +1,12 @@
 import { ResponseDTO } from "../base/responsedto.model";
 
 export interface Ubigeo {
-    codigoUbigeo: string,
-    codigoRegion: string,
-    denominacionRegion: string,
-    codigoProvincia: string,
-    denominacionProvincia: string,
-    codigoDistrito: string,
-    denominacionDistrito: string,
-    estado: number
+    regionId: string,
+    region: string,
+    provinciaId: string,
+    provincia: string,
+    ubigeo: string,
+    distrito: string
 }
 
 export type UbigeoResponse = ResponseDTO<Ubigeo>;

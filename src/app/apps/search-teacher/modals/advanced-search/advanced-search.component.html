@@ -185,7 +185,7 @@
                         } @else {
                         <option [ngValue]="null" selected disabled>Región</option>
                         @for (item of departmentsList; track $index) {
-                        <option [ngValue]="item.codigoRegion">{{item.denominacionRegion}}</option>
+                        <option [ngValue]="item.regionId">{{item.region}}</option>
                         }
                         }
                     </select>
@@ -206,7 +206,7 @@
                         } @else {
                         <option [ngValue]="null" selected disabled>Provincia</option>
                         @for (item of provincesListNow; track $index) {
-                        <option [ngValue]="item.codigoProvincia">{{item.denominacionProvincia}}</option>
+                        <option [ngValue]="item.provinciaId">{{item.provincia}}</option>
                         }
                         }
                     </select>
@@ -227,7 +227,7 @@
                         } @else {
                         <option [ngValue]="null" selected disabled>Distrito</option>
                         @for (item of districtsListNow; track $index) {
-                        <option [ngValue]="item.codigoUbigeo">{{item.denominacionDistrito}}</option>
+                        <option [ngValue]="item.ubigeo">{{item.distrito}}</option>
                         }
                         }
                     </select>
@@ -251,7 +251,7 @@
                         } @else {
                         <option [ngValue]="null" selected disabled>Región</option>
                         @for (item of departmentsList; track $index) {
-                        <option [ngValue]="item.codigoRegion">{{item.denominacionRegion}}</option>
+                        <option [ngValue]="item.regionId">{{item.region}}</option>
                         }
                         }
                     </select>
@@ -273,7 +273,7 @@
                         } @else {
                         <option [ngValue]="null" selected disabled>Provincia</option>
                         @for (item of provincesListProcedencia; track $index) {
-                        <option [ngValue]="item.codigoProvincia">{{item.denominacionProvincia}}</option>
+                        <option [ngValue]="item.provinciaId">{{item.provincia}}</option>
                         }
                         }
                     </select>
@@ -295,7 +295,7 @@
                         } @else {
                         <option [ngValue]="null" disabled>Distrito</option>
                         @for (item of districtsListProcedencia; track $index) {
-                        <option [ngValue]="item.codigoUbigeo">{{item.denominacionDistrito}}</option>
+                        <option [ngValue]="item.ubigeo">{{item.distrito}}</option>
                         }
                         }
                     </select>

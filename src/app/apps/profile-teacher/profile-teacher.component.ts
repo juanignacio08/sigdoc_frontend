@@ -83,14 +83,14 @@ export class ProfileTeacherComponent implements OnInit {
       next: (response) => {
         this.teacher = response.data;
         this.ubigeoService
-          .getUbigeoDetail(this.teacher.codUbigeoActual.codigoUbigeo)
+          .getUbigeoDetail(this.teacher.codUbigeoActual.ubigeo)
           .subscribe({
             next: (response) => {
               this.teacher.codUbigeoActual = response.data;
             },
           });
         this.ubigeoService
-          .getUbigeoDetail(this.teacher.codUbigeoProcedencia.codigoUbigeo)
+          .getUbigeoDetail(this.teacher.codUbigeoProcedencia.ubigeo)
           .subscribe({
             next: (response) => {
               this.teacher.codUbigeoProcedencia = response.data;

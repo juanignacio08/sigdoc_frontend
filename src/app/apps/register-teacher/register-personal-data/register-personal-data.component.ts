@@ -154,10 +154,7 @@ export class RegisterPersonalDataComponent implements OnInit {
   }
 
   onProvinceProcedenciaChange(provinceCode: string) {
-    const departmentCode = this.personalForm.get('regionProcedencia')?.value;
-    if (departmentCode !== null) {
-      this.loadDistrictsProcedencia(departmentCode, provinceCode);
-    }
+    this.loadDistrictsProcedencia(provinceCode);
   }
 
   onRegionProcedenciaChange(codigoRegion: string) {
@@ -165,10 +162,7 @@ export class RegisterPersonalDataComponent implements OnInit {
   }
 
   onProvinceChange(provinceCode: string) {
-    const departmentCode = this.personalForm.get('regionActual')?.value;
-    if (departmentCode !== null) {
-      this.loadDistrictsNow(departmentCode, provinceCode);
-    }
+    this.loadDistrictsNow(provinceCode);
   }
 
   onRegionChange(codigoRegion: string) {
@@ -252,10 +246,11 @@ export class RegisterPersonalDataComponent implements OnInit {
     this.errorDepartments = false;
     this.personalForm.get('regionActual')?.disable();
     this.personalForm.get('regionProcedencia')?.disable();
-
+    
     this.ubigeoService.getDepartments().subscribe({
       next: (response) => {
         this.departmentsList = response.data;
+        
         this.loadingDepartments = false;
         this.personalForm.get('regionActual')?.enable();
         this.personalForm.get('regionProcedencia')?.enable();
@@ -285,9 +280,8 @@ export class RegisterPersonalDataComponent implements OnInit {
         if (this.ubigeoActual) {
           this.personalForm
             .get('provinciaActual')
-            ?.setValue(this.getAllByUbigeoCode(this.ubigeoActual, 2));
+            ?.setValue(this.teacherActive?.codUbigeoActual.provinciaId);
         } else {
-          console.log('No existe ubigeo actual');
           this.personalForm.get('provinciaActual')?.setValue(null);
         }
       },
@@ -305,12 +299,12 @@ export class RegisterPersonalDataComponent implements OnInit {
     }
   }
 
-  loadDistrictsNow(departmentCode: string, provinceCode: string) {
+  loadDistrictsNow(provinceCode: string) {
     this.loadingDistrictsNow = true;
     this.errorDistrictsNow = false;
     this.personalForm.get('distritoActual')?.disable();
 
-    this.ubigeoService.getDistricts(departmentCode, provinceCode).subscribe({
+    this.ubigeoService.getDistricts(provinceCode).subscribe({
       next: (response) => {
         this.districtsListNow = response.data;
         this.loadingDistrictsNow = false;
@@ -330,10 +324,9 @@ export class RegisterPersonalDataComponent implements OnInit {
   }
 
   retryDistrictsNow() {
-    const departmentCode = this.personalForm.get('regionActual')?.value;
     const provinceCode = this.personalForm.get('provinciaActual')?.value;
-    if (departmentCode !== null && provinceCode !== null) {
-      this.loadDistrictsNow(departmentCode, provinceCode);
+    if (provinceCode !== null) {
+      this.loadDistrictsNow(provinceCode);
     }
   }
 
@@ -351,7 +344,7 @@ export class RegisterPersonalDataComponent implements OnInit {
         if (this.ubigeoProcedencia) {
           this.personalForm
             .get('provinciaProcedencia')
-            ?.setValue(this.getAllByUbigeoCode(this.ubigeoProcedencia, 2));
+            ?.setValue(this.teacherActive?.codUbigeoProcedencia.provinciaId);
         } else {
           this.personalForm.get('provinciaProcedencia')?.setValue(null);
         }
@@ -370,26 +363,24 @@ export class RegisterPersonalDataComponent implements OnInit {
     }
   }
 
-  loadDistrictsProcedencia(departmentCode: string, provinceCode: string) {
+  loadDistrictsProcedencia(provinceCode: string) {
     this.loadingDistrictsProcedencia = true;
     this.errorDistrictsProcedencia = false;
     this.personalForm.get('distritoProcedencia')?.disable();
 
-    this.ubigeoService.getDistricts(departmentCode, provinceCode).subscribe({
+    this.ubigeoService.getDistricts(provinceCode).subscribe({
       next: (response) => {
         this.districtsListProcedencia = response.data;
         this.loadingDistrictsProcedencia = false;
         this.personalForm.get('distritoProcedencia')?.enable();
         if (!this.teacherActive) {
           this.personalForm.get('distritoProcedencia')?.setValue(null);
-          console.log('distrito en null');
         }
         if (this.ubigeoProcedencia) {
           this.personalForm
             .get('distritoProcedencia')
             ?.setValue(this.ubigeoProcedencia);
         } else {
-          console.log('NO Existe Ubigeo Procedencia DISTRITO');
           this.personalForm.get('distritoProcedencia')?.setValue(null);
         }
       },
@@ -401,10 +392,9 @@ export class RegisterPersonalDataComponent implements OnInit {
   }
 
   retryDistrictsProcedencia() {
-    const departmentCode = this.personalForm.get('regionProcedencia')?.value;
     const provinceCode = this.personalForm.get('provinciaProcedencia')?.value;
-    if (departmentCode !== null && provinceCode !== null) {
-      this.loadDistrictsProcedencia(departmentCode, provinceCode);
+    if (provinceCode !== null) {
+      this.loadDistrictsProcedencia(provinceCode);
     }
   }
 
@@ -530,7 +520,8 @@ export class RegisterPersonalDataComponent implements OnInit {
     const documentNumber = this.emptyToUndefined(
       this.personalForm.get('numDocument')?.value,
     );
-
+    console.log(documentNumber);
+    
     if (
       documentNumber != undefined &&
       this.personalForm.get('numDocument')?.valid
@@ -541,11 +532,12 @@ export class RegisterPersonalDataComponent implements OnInit {
         next: (response) => {
           this.teacherActive = response.data;
           this.sessionStorageService.set('teacherActive', this.teacherActive);
+          console.log(this.teacherActive);
+          
           this.setFormTeacher(this.teacherActive);
           this.loadingSearchTeacher = false;
         },
         error: (err) => {
-          console.log(err);
           this.errorSearchTeacher = true;
           this.notFoundTeacherClearForm();
           this.loadingSearchTeacher = false;
@@ -561,6 +553,10 @@ export class RegisterPersonalDataComponent implements OnInit {
           }
         },
       });
+    } else {
+      console.log("No esta buscando");
+      console.log(this.loadingSearchTeacher);
+      
     }
   }
 
@@ -686,34 +682,32 @@ export class RegisterPersonalDataComponent implements OnInit {
       this.personalForm
         .get('gender')
         ?.setValue(
-          teacher.codGenero.codigo != null ? teacher.codGenero.codigo : '',
+          teacher.codGenero?.codigo ?? null
         );
       this.personalForm
         .get('maritalStatus')
         ?.setValue(
-          teacher.codEstadoCivil.codigo != null
-            ? teacher.codEstadoCivil.codigo
-            : '',
+          teacher.codEstadoCivil?.codigo ?? null,
         );
 
       this.personalForm
         .get('regionActual')
         ?.setValue(
-          this.getAllByUbigeoCode(teacher.codUbigeoActual.codigoUbigeo, 1),
+          teacher.codUbigeoActual?.regionId ?? null,
         );
 
-      this.ubigeoActual = teacher.codUbigeoActual.codigoUbigeo || undefined;
+      this.ubigeoActual = teacher.codUbigeoActual?.ubigeo ?? undefined;
 
       this.personalForm.get('addressNow')?.setValue(teacher.direccion);
 
       this.personalForm
         .get('regionProcedencia')
         ?.setValue(
-          this.getAllByUbigeoCode(teacher.codUbigeoProcedencia.codigoUbigeo, 1),
+          teacher.codUbigeoProcedencia?.regionId ?? null
         );
 
       this.ubigeoProcedencia =
-        teacher.codUbigeoProcedencia.codigoUbigeo || undefined;
+        teacher.codUbigeoProcedencia?.ubigeo ?? undefined;
 
       this.resetPhotoInput();
 

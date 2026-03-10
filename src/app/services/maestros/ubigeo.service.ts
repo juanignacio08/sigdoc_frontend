@@ -23,8 +23,8 @@ export class UbigeoService {
     return this.http.get<UbigeoListResponse>(url);
   }
 
-  getDistricts(departmentCode : string, provinceCode : string) : Observable<UbigeoListResponse> {
-    const url = `${this.baseUrl}/getDistritos?departamentCode=${departmentCode}&provinceCode=${provinceCode}`;
+  getDistricts(provinceCode : string) : Observable<UbigeoListResponse> {
+    const url = `${this.baseUrl}/getDistritos?provinceCode=${provinceCode}`;
     return this.http.get<UbigeoListResponse>(url);
   }
 

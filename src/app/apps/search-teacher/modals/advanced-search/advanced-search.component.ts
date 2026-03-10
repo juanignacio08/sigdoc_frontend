@@ -239,18 +239,11 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   onProvinceChange(provinceCode: string) {
-    const departmentCode = this.teacherFilterForm.get('regionActual')?.value;
-    if (departmentCode !== null) {
-      this.loadDistrictsNow(departmentCode, provinceCode);
-    }
+    this.loadDistrictsNow(provinceCode);
   }
 
   onProvinceProcedenciaChange(provinceCode: string) {
-    const departmentCode =
-      this.teacherFilterForm.get('regionProcedencia')?.value;
-    if (departmentCode !== null) {
-      this.loadDistrictsProcedencia(departmentCode, provinceCode);
-    }
+    this.loadDistrictsProcedencia(provinceCode);
   }
 
   onRegionProcedenciaChange(codigoRegion: string) {
@@ -347,11 +340,11 @@ export class AdvancedSearchComponent implements OnInit {
     });
   }
 
-  loadDistrictsNow(departmentCode: string, provinceCode: string) {
+  loadDistrictsNow(provinceCode: string) {
     this.controls.codeDistrictsNow.loading = true;
     this.controls.codeDistrictsNow.error = false;
 
-    this.ubigeoService.getDistricts(departmentCode, provinceCode).subscribe({
+    this.ubigeoService.getDistricts(provinceCode).subscribe({
       next: (response) => {
         this.districtsListNow = response.data;
         this.controls.codeDistrictsNow.loading = false;
@@ -379,11 +372,11 @@ export class AdvancedSearchComponent implements OnInit {
     });
   }
 
-  loadDistrictsProcedencia(departmentCode: string, provinceCode: string) {
+  loadDistrictsProcedencia(provinceCode: string) {
     this.controls.codeDistrictsProcedencia.loading = true;
     this.controls.codeDistrictsProcedencia.error = false;
 
-    this.ubigeoService.getDistricts(departmentCode, provinceCode).subscribe({
+    this.ubigeoService.getDistricts(provinceCode).subscribe({
       next: (response) => {
         this.districtsListProcedencia = response.data;
         this.controls.codeDistrictsProcedencia.loading = false;
@@ -572,10 +565,9 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   retryDistrictsNow() {
-    const departmentCode = this.teacherFilterForm.get('regionActual')?.value;
     const provinceCode = this.teacherFilterForm.get('provinciaActual')?.value;
-    if (departmentCode !== null && provinceCode !== null) {
-      this.loadDistrictsNow(departmentCode, provinceCode);
+    if (provinceCode !== null) {
+      this.loadDistrictsNow(provinceCode);
     }
   }
 
@@ -588,13 +580,11 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   retryDistrictsProcedencia() {
-    const departmentCode =
-      this.teacherFilterForm.get('regionProcedencia')?.value;
     const provinceCode = this.teacherFilterForm.get(
       'provinciaProcedencia'
     )?.value;
-    if (departmentCode !== null && provinceCode !== null) {
-      this.loadDistrictsProcedencia(departmentCode, provinceCode);
+    if (provinceCode !== null) {
+      this.loadDistrictsProcedencia(provinceCode);
     }
   }
 
