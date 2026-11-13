@@ -1,0 +1,132 @@
+<section class="main-content">
+  <ul class="breadcrumb breadcrumb-style ">
+    <li class="breadcrumb-item">
+      <h5 class="page-title m-b-0">Personal Docente</h5>
+    </li>
+    <li class="breadcrumb-item">Busqueda</li>
+  </ul>
+  <div class="section-body">
+    <div class="card">
+      <div class="card-header pb-1">
+        <h2 class="fs-5 fw-bold">Búsqueda de Docentes</h2>
+      </div>
+      <div class="card-body p-3">
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 px-3 mb-3">
+            <div class="search-wrapper">
+              <i class="search-icon fas fa-search"></i>
+              <input type="text" class="form-control" name="dni" placeholder="DNI" aria-label="dni"
+                (input)='filterDatatable($event)' />
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-8 col-lg-9 px-3 text-end mb-3">
+            <button class="btn btn-secondary btn-icon icon-left" (click)="advancedSearch()"><i
+                class="fas fa-search"></i> B. Avanzada</button>
+          </div>
+
+          <div class="col-12">
+            <div class="table-header-controls">
+              <div class="table-info">
+                <span class="title">Listado de docentes</span>
+                <span class="description">
+                  Selecciona cuántos registros deseas visualizar por página
+                </span>
+              </div>
+
+              <div class="page-size-selector">
+                <label for="pageSize">Filas:</label>
+                <select id="pageSize" (change)="onPageSizeChange($event)">
+                  @for (size of pageSizeOptions; track $index) {
+                  <option [value]="size">
+                    {{ size }}
+                  </option>
+                  }
+                </select>
+              </div>
+            </div>
+            @if (docenteFilter !== null) {
+            <div class="active-filters-bar">
+              <div class="filters-info">
+                <span class="icon">🔎</span>
+                <span class="text">
+                  Filtros aplicados a la búsqueda
+                </span>
+              </div>
+
+              <button type="button" class="clear-filters-btn" (click)="clearFilters()">
+                Limpiar filtros
+              </button>
+            </div>
+            }
+
+            <ngx-datatable #table class="material" [rows]="teacherFilterList" [loadingIndicator]="loadingIndicator"
+              columnMode="force" [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="pageSize"
+              [count]="totalItems" [offset]="pageNumber" [externalPaging]="true" [scrollbarH]="scrollBarHorizontal"
+              [reorderable]="reorderable" (page)="onPage($event)">
+
+              <ngx-datatable-column name="Nro" [width]="60">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex">
+                  {{ pageNumber * pageSize + rowIndex + 1 }}
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Docente" [width]="350">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <img [src]="row.urlFotografia" class="data-table-img" alt="imagen-perfil" />
+                  <div class="name-col-style">
+                    <div>{{row.nombre}} {{row.apellidoPaterno}} {{row.apellidoMaterno}}</div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="DNI" [width]="100">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <div class="name-col-style">
+                    <div>{{row.numDocumento}}</div>
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Email" [width]="280">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{row.emailPersonal}}
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Celular" [width]="120">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{row.telefono}}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Estado" [width]="100">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  @if (row.estado===1) {
+                  <div class="badge-outline col-indigo">{{row.estado | viewStatusTeacher}}
+                  </div>
+                  }
+                  @if (row.estado===0) {
+                  <div class="badge-outline col-red">{{row.estado | viewStatusTeacher}}
+                  </div>
+                  }
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Actions" [sortable]="false">
+                <ng-template let-value="value" let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                  <button class="btn btn-icon btn-info btn-sm me-1" placement="top" ngbTooltip="Ver Información"
+                    aria-label="Ver Informacion" (click)="goToProfile(row)">
+                    <i class="fas fa-file-alt"></i>
+                  </button>
+                  <button class="btn btn-icon btn-danger btn-sm" placement="top" ngbTooltip="Eliminar Información"
+                    aria-label="eliminar" (click)="deleteRecord(row)">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

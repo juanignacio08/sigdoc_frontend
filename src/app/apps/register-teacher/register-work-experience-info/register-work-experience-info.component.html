@@ -1,0 +1,85 @@
+@if (loadingOperation) {
+<div class="text-center p-5 m-5">
+    <div class="spinner-grow text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-secondary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-danger" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-warning" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-dark" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+} @else {
+<div class="row align-items-center mb-0">
+    <div class="col-8">
+        <p class="fw-bold fs-6 m-0">Experiencia Profesional
+            @if (workExperienciesList.length > 0) {
+            <span class="badge bg-secondary">Total: {{ workExperienciesList.length }}</span>
+            }
+        </p>
+    </div>
+    <div class="col-4 text-end">
+        <button class="btn btn-icon icon-left btn-primary m-0"
+            (click)="openModalWork('add','Registrar Experiencia Laboral' , null)"><i class="fas fa-plus"></i>
+            Agregar</button>
+    </div>
+</div>
+<hr class="mt-2">
+
+<div class="row">
+    @if (workExperienciesList.length > 0) {
+    @for (item of workExperienciesList; track item.experienciaProfesionalId) {
+    <div class="col-6">
+        <app-docente-experiencia-laboral-card [data]="item" (editar)="openModalWork('edit', 'Editar Experiencia Profesional', $event)" (delete)="openModalWork('delete', 'Eliminar Experiencia Profesional', $event)" (viewPdf)="openPdfModal($event.experienciaProfesionalId)"></app-docente-experiencia-laboral-card>
+    </div>
+    }
+    } @else {
+    <div class="col-12">
+        <div class="empty-state">
+            <div class="empty-icon">📂</div>
+            <h5>No hay información registrada</h5>
+            <p>
+                Aún no se ha registrado información laboral para este docente.
+            </p>
+            <button class="btn btn-primary btn-sm"
+                (click)="openModalWork('add', 'Registrar Experiencia Laboral', null)">Agregar registro</button>
+        </div>
+    </div>
+    }
+
+</div>
+
+<div class="row mt-2">
+    <div class="col-12 col-md-4 text-start">
+        <button type="button" class="btn btn-info btn-icon icon-left" placement="top"
+            ngbTooltip="Volver al anterior formulario" [disabled]="!teacherActive" (click)="goToBackStep()"><i
+                class="fas fa-arrow-alt-circle-left"></i>
+            Atras</button>
+    </div>
+    <div class="col-12 col-md-4 text-center">
+
+    </div>
+    <div class="col-12 col-md-4 text-end">
+        <button type="button" class="btn btn-info btn-icon icon-left" placement="top"
+            ngbTooltip="Avanzar al siguiente formulario" [disabled]="!teacherActive" (click)="goToNextStep()"><i
+                class="fas fa-arrow-alt-circle-right"></i>
+            Siguiente</button>
+    </div>
+</div>
+}

@@ -1,0 +1,30 @@
+<section class="main-content">
+    <ul class="breadcrumb breadcrumb-style ">
+        <li class="breadcrumb-item">
+            <h5 class="page-title m-b-0">Personal Docente</h5>
+        </li>
+        <li class="breadcrumb-item">Registro</li>
+    </ul>
+    <div class="section-body">
+
+        <div class="card">
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="py-4">
+                    <app-stepper [steps]="['Datos Personales', 'Formación Académica', 'Información Profesional', 'Experiencia Profesional', 'Idiomas']"
+                        [currentStep]="currentStep">
+                    </app-stepper>
+                </div>
+                <div class="card-header">
+                    <h4 class="fs-5 mb-2">
+                        Registrar Docente
+                        <span class="fs-6 fw-normal">({{sectionTitle}})</span>
+                    </h4>
+                </div>
+
+                <div class="card-body pt-0 px-4">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

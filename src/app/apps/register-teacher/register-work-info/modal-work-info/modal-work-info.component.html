@@ -1,0 +1,238 @@
+@if (action === 'delete') {
+<div class="row p-3 pt-4">
+    <div class="col-12 text-center text-danger">
+        <p class="fs-5 fw-bold">¿Esta seguro de eliminar el registro laboral?</p>
+    </div>
+    <div class="col-12 text-center mt-2 mb-0">
+        <button class="btn btn-danger me-2" (click)="confirmDelete()">Si</button>
+        <button class="btn btn-info ms-2" (click)="close()">No</button>
+    </div>
+</div>
+} @else {
+<div class="modal-header p-0">
+    <div class="container p-3 pt-4">
+        <div class="row align-items-center mb-0">
+            <div class="col-2 text-success text-center">
+                <i class="far fa-file-alt fs-2"></i>
+            </div>
+            <div class="col-10">
+                <p class="fs-5 fw-bold text-main mb-0">{{title}}</p>
+            </div>
+        </div>
+        <hr class="mb-0 mt-2">
+    </div>
+</div>
+
+<div class="modal-body p-0">
+    <form [formGroup]="workInfoForm">
+        <div class="container px-3">
+            <div class="row px-3">
+                <!-- Facultad -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <select class="form-select form-select-sm" id="facultadId" formControlName="facultadId"
+                            [class.is-invalid]="isInvalid('facultadId')">
+                            @if (controls.faculty.loading) {
+                            <option disabled selected>Cargando las facultades...</option>
+                            } @else {
+                            <option [ngValue]="null" disabled>Seleccione la facultad</option>
+                            @for (item of facultyList; track item.facultadId) {
+                            <option [ngValue]="item.facultadId">{{item.denominacion}}</option>
+                            }
+                            }
+                        </select>
+                        @if (controls.faculty.loading) {
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                        }
+                        @if (controls.faculty.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryFaculty()">(Ocurrio un
+                            error...)</a>
+                        }
+                        <label for="facultadId">Facultad</label>
+                    </div>
+                </div>
+
+                <!-- Departamento -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <select class="form-select form-select-sm" id="departamentoId" formControlName="departamentoId"
+                            [class.is-invalid]="isInvalid('departamentoId')">
+                            @if (controls.academicDepartment.loading) {
+                            <option disabled selected>Cargando los departamentos académicos...</option>
+                            } @else {
+                            <option [ngValue]="null" disabled>Seleccione el departamento académico</option>
+                            @for (item of academicDepartmentList; track item.departamentoAcademicoId) {
+                            <option [ngValue]="item.departamentoAcademicoId">{{item.denominacion}}</option>
+                            }
+                            }
+                        </select>
+                        @if (controls.academicDepartment.loading) {
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                        }
+                        @if (controls.academicDepartment.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryAcademicDepartment()">(Ocurrio un
+                            error...)</a>
+                        }
+                        <label for="departamentoId">Departamento</label>
+                    </div>
+                </div>
+
+                <!-- Escuela -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <select class="form-select form-select-sm" id="escuelaId" formControlName="escuelaId"
+                            [class.is-invalid]="isInvalid('escuelaId')">
+                            @if (controls.professionalSchool.loading) {
+                            <option disabled selected>Cargando las escuelas profesionales...</option>
+                            } @else {
+                            <option [ngValue]="null" disabled>Seleccione la escuela profesional</option>
+                            @for (item of professionalSchoolList; track item.escuelaProfesionalId) {
+                            <option [ngValue]="item.escuelaProfesionalId">{{item.denominacion}}</option>
+                            }
+                            }
+                        </select>
+                        @if (controls.professionalSchool.loading) {
+                        <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                        }
+                        @if (controls.professionalSchool.error) {
+                        <a style="cursor: pointer;" class="text-danger" (click)="retryProfessionalSchool()">(Ocurrio un
+                            error...)</a>
+                        }
+                        <label for="escuelaId">Escuela Profesional</label>
+                    </div>
+                </div>
+
+                <!-- Código institucional -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control form-control-sm" id="codigoInstitucional"
+                            formControlName="codigoInstitucional" [class.is-invalid]="isInvalid('codigoInstitucional')"
+                            placeholder="">
+                        <label for="codigoInstitucional">Código institucional</label>
+                    </div>
+                </div>
+
+                <!-- Email institucional -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control form-control-sm" id="emailInstitucional"
+                            formControlName="emailInstitucional" placeholder="">
+                        <label for="emailInstitucional">Email institucional</label>
+                    </div>
+                </div>
+
+                <!-- Régimen laboral -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <select class="form-select form-select-sm" id="codRegimenLaboral"
+                            formControlName="codRegimenLaboral" [class.is-invalid]="isInvalid('codRegimenLaboral')">
+                            @if (controls.workRegime.loading) {
+                            <option disabled selected>Cargando los regímenes laborales...</option>
+                            } @else {
+                            <option [ngValue]="null" disabled>Seleccione Régimen Laboral</option>
+                            @for (item of workRegimeList; track $index) {
+                            <option [ngValue]="item.codigo">{{item.denominacion}}</option>
+                            }
+                            }
+                        </select>
+                        <label for="codRegimenLaboral">Régimen laboral</label>
+                    </div>
+                </div>
+
+                <!-- Categoría docente nombrado -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <select class="form-select form-select-sm" id="codCategoriaDocenteNombrado"
+                            formControlName="codCategoriaDocenteNombrado">
+                            @if (controls.teacherCategory.loading) {
+                            <option disabled selected>Cargando las categorías laborales...</option>
+                            } @else {
+                            <option [ngValue]="null" disabled>Categoría (Nombrado)</option>
+                            @for (item of teacherCategoryList; track $index) {
+                            <option [ngValue]="item.codigo">{{item.denominacion}}</option>
+                            }
+                            }
+                        </select>
+                        <label for="codCategoriaDocenteNombrado">Categoría docente (Nombrado)</label>
+                    </div>
+                </div>
+
+                <!-- Nivel docente contratado -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <select class="form-select form-select-sm" id="codNivelDocenteContratado"
+                            formControlName="codNivelDocenteContratado">
+                            @if (controls.teacherLevel.loading) {
+                            <option disabled selected>Cargando...</option>
+                            } @else {
+                            <option [ngValue]="null" disabled>Nivel (Contratado)</option>
+                            @for (item of teacherLevelList; track $index) {
+                            <option [ngValue]="item.codigo">{{item.denominacion}}</option>
+                            }
+                            }
+                        </select>
+                        <label for="codNivelDocenteContratado">Nivel docente (Contratado)</label>
+                    </div>
+                </div>
+
+                <!-- Tiempo de dedicación -->
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <select class="form-select form-select-sm" id="codTiempoDedicacion"
+                            formControlName="codTiempoDedicacion">
+                            @if (controls.dedicationTime.loading) {
+                            <option disabled selected>Cargando...</option>
+                            } @else {
+                            <option [ngValue]="null" disabled>Tiempo de dedicación</option>
+                            @for (item of dedicationTimeList; track $index) {
+                            <option [ngValue]="item.codigo">{{item.denominacion}}</option>
+                            }
+                            }
+                        </select>
+                        <label for="codTiempoDedicacion">Tiempo de dedicación</label>
+                    </div>
+                </div>
+
+                <!-- Fecha inicio -->
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control form-control-sm" id="fechaInicio"
+                            formControlName="fechaInicio">
+                        <label for="fechaInicio">Fecha inicio</label>
+                    </div>
+                </div>
+
+                <!-- Fecha fin -->
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control form-control-sm" id="fechaFin"
+                            formControlName="fechaFin">
+                        <label for="fechaFin">Fecha fin</label>
+                    </div>
+                </div>
+
+                <!-- Documento -->
+                @if (fileError) {
+                <small class="text-danger">
+                    {{ fileError }}
+                </small>
+                }
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="file" id="documento" accept="application/pdf" class="form-control form-control-sm"
+                            (change)="onFileSelected($event)">
+                        <label for="documento">Documento</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success btn-icon icon-left me-3" placement="top"
+        ngbTooltip="Guardar Información" [disabled]="!workInfoForm.valid" (click)="submit()"><i class="fas fa-save"></i>
+        Guardar</button>
+    <button class="btn btn-info" (click)="close()">Cerrar</button>
+</div>
+}

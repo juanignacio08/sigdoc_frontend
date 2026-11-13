@@ -1,0 +1,45 @@
+p.text-main {
+    color: #293C5A;
+}
+
+.search-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.search-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  pointer-events: none;
+  font-size: 20px;
+}
+
+.search-wrapper input {
+  padding-left: 40px;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column; /* Alinea el contenido de arriba a abajo */
+  
+  /* Ajuste clave: 100vh menos el alto aproximado de tu header/breadcrumb */
+  /* Si el scroll sigue apareciendo con poco contenido, aumenta el valor de 150px */
+  min-height: calc(100dvh - 150px); 
+  
+  width: 100%;
+}
+
+.card {
+  /* Esto hará que el card crezca para llenar el espacio del main-container */
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0; /* Evita márgenes extra que disparen el scroll */
+}
+
+.padding-20 {
+  flex: 1; /* Asegura que el contenido interno también se expanda */
+}

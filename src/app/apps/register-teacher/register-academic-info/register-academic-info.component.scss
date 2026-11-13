@@ -1,0 +1,23 @@
+.empty-state {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.empty-state h5 {
+  font-weight: 600;
+}
+
+.empty-state p {
+  color: #6c757d;
+  max-width: 360px;
+  margin: 0 auto 1.5rem;
+}
